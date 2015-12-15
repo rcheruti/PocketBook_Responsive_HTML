@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Responsive HTML - Menus</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/style.css" rel="stylesheet" type="text/css"/>
+        <script src="js/libs/angular-animate.min.js" type="text/javascript"></script>
+        <script src="js/libs/angular-route.min.js" type="text/javascript"></script>
+        <script src="js/libs/angular.min.js" type="text/javascript"></script>
+        <script>
+            window.Module = angular.module('Module',[]);
+        </script>
+    </head>
+    <body ng-app="Module" ng-strict-di="true">
+        
+        <div class="menuButtonBox" ng-init="showMenu = false;">
+            <div class="menuButton" ng-click="showMenu = !showMenu;">Menu</div>
+        </div>
+        <div class="menu" ng-class="{ show: showMenu }">
+            <ul >
+                <li>Home</li>
+                <li>Serviços</li>
+                <li>Produtos</li>
+                <li>Sobre nós</li>
+                <li>Contato</li>
+            </ul>
+        </div>
+        
+        <div class="conteudo">
+            <img src="img/carro_bracon.jpg" alt="" class="floatLeft"/>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla aliquam porta magna, eget faucibus eros ultrices vel. Aenean sed odio in dui tempor tristique vel ut ex. Integer faucibus quam in tellus maximus fringilla. Ut suscipit massa nec diam fermentum, vitae tristique orci lacinia. Morbi maximus, neque scelerisque sodales sollicitudin, arcu elit semper ex, ut convallis odio elit ac dui. Ut accumsan magna eu lacinia aliquet. Duis ultricies purus eu purus gravida, vitae viverra ligula ultricies. In scelerisque laoreet nulla, non accumsan nisl condimentum ac. Etiam porttitor felis viverra elit elementum hendrerit. Suspendisse libero justo, feugiat ut ornare rutrum, vulputate quis nulla. Maecenas quis cursus mauris. Nam ornare turpis vitae justo rutrum viverra.
+
+            Nam ultrices, mi quis congue efficitur, erat justo convallis libero, quis accumsan neque sapien in magna. Mauris sit amet porttitor ex. Nam aliquet et justo non dignissim. Suspendisse tincidunt sapien vitae neque gravida ullamcorper. Donec vitae ante pharetra, eleifend ante et, placerat velit. Vivamus sagittis tellus nisl, eget semper lorem imperdiet at. Aliquam tincidunt lectus a ante dictum, ac viverra lacus commodo. Proin vehicula ligula et ligula cursus, vel imperdiet ex bibendum. Sed quis est nulla. Sed nulla quam, pretium at volutpat nec, porta rhoncus risus. Suspendisse ante ante, varius vitae dui nec, malesuada imperdiet ipsum. Etiam dapibus augue a vulputate gravida. Pellentesque eget arcu id tellus eleifend condimentum. Proin laoreet bibendum ligula molestie semper. Quisque faucibus rhoncus vestibulum. Cras ut ligula quam.
+
+            Nunc feugiat dapibus bibendum. Suspendisse accumsan bibendum ipsum, in euismod est lacinia vel. Nulla facilisi. In suscipit finibus purus. In convallis mauris eros, a fringilla dolor consequat quis. Quisque rutrum nunc a laoreet feugiat. Cras auctor pulvinar eros in sollicitudin. Sed consectetur, mi a cursus ultrices, libero magna rutrum nunc, et vehicula eros ante ac libero. Ut hendrerit mollis consequat. Cras sapien lorem, semper in massa sed, malesuada tempus velit. Nulla consequat gravida ex, pretium ullamcorper eros fermentum in. Aliquam sagittis dignissim lectus in hendrerit. Vivamus iaculis sodales egestas. Vivamus mattis mi nec ante semper molestie.
+
+            Cras feugiat urna eu purus lacinia interdum. Donec malesuada eros non est tempus, ac euismod urna tempus. Aliquam pretium, ex sit amet fringilla vestibulum, enim nunc mollis tortor, vel ullamcorper tortor justo a nisl. Maecenas luctus euismod ligula quis malesuada. Sed felis metus, accumsan vel lacus sed, suscipit placerat libero. Aenean id elementum sem. Cras placerat sagittis ipsum vitae venenatis. Ut id lectus hendrerit, laoreet augue ultrices, tempor diam. Sed at urna turpis. Cras nibh mauris, vestibulum in ultrices in, lobortis ut nisl. Fusce dictum sem sed elementum tincidunt. Donec luctus finibus posuere. Duis pharetra lacus id nibh tempor vulputate. In ultricies in lectus iaculis volutpat.
+
+            In blandit odio ut rutrum pulvinar. Etiam ante mi, porttitor vel purus a, gravida commodo odio. Aliquam cursus nunc nibh, quis sagittis odio pulvinar non. Nulla in tincidunt ipsum. Sed gravida tellus non sagittis iaculis. Suspendisse sodales, magna eget varius bibendum, odio diam pharetra metus, ac sollicitudin tellus neque vel turpis. Etiam in elit pulvinar risus ullamcorper maximus. Donec sagittis elementum velit, ut tristique arcu interdum sed. Quisque ac diam at sapien ultricies imperdiet. In convallis mollis accumsan. Donec pulvinar diam vitae ex sodales pretium. Phasellus sit amet cursus diam, vitae interdum diam. Mauris non porttitor erat, ut feugiat massa. Nulla facilisi. Sed eu tellus gravida, suscipit arcu ac, placerat nulla.
+
+            <img src="img/carro_bracon.jpg" alt="" class="floatRight"/>
+            Proin sagittis quam laoreet molestie pellentesque. Praesent vulputate aliquam nisl sed blandit. Mauris porttitor, lectus id rhoncus posuere, tellus nunc pellentesque felis, nec ultrices velit sapien lobortis est. Vivamus dignissim in magna ut placerat. Curabitur ut odio at quam vulputate ornare sed vel lectus. Proin consectetur interdum est, et suscipit metus rhoncus ut. Nam pellentesque, est ut varius sollicitudin, tortor risus dapibus turpis, fermentum placerat magna eros vel quam. Nullam fringilla leo a ligula commodo sagittis. Morbi ut porta lorem, et dictum sapien. Fusce hendrerit, lacus non efficitur rutrum, tortor ex iaculis leo, at efficitur velit lacus lobortis eros. In pulvinar a sem congue molestie. Donec rhoncus lectus sit amet odio convallis, ut bibendum neque ornare.
+
+            Phasellus sodales ullamcorper ipsum a molestie. Cras pharetra cursus leo. Mauris scelerisque urna eu dapibus iaculis. Donec libero lorem, sollicitudin quis ante a, malesuada efficitur ante. Aliquam facilisis porta massa sit amet suscipit. Proin iaculis magna neque, viverra cursus mauris iaculis eget. Pellentesque venenatis augue tellus, imperdiet suscipit odio sodales nec. In nisi metus, mollis sit amet eros et, suscipit suscipit urna. Nunc interdum at mi nec volutpat. Ut et placerat risus. Maecenas sit amet suscipit dolor. Nunc dapibus ex at eros dictum malesuada. Pellentesque eget felis vitae felis molestie tempor.
+
+            Cras imperdiet vestibulum nulla. In metus urna, ultricies et enim et, tristique pharetra ante. Duis a felis elementum, aliquet quam eu, faucibus lacus. Mauris varius odio vel sem tincidunt, at maximus dolor aliquet. Proin in ullamcorper leo. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer pretium, quam accumsan facilisis ullamcorper, libero turpis venenatis purus, vel fringilla lectus magna congue tellus. Vestibulum tincidunt mi metus, tempor aliquet massa lobortis a. Fusce dapibus et tortor sit amet ullamcorper. Integer non justo sapien. Vestibulum consectetur tempor mi vitae fermentum.
+
+        </div>
+        
+    </body>
+</html>
