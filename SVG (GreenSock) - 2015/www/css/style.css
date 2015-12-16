@@ -1,0 +1,37 @@
+
+*:not(button):not(input){
+    margin:0; padding:0; border:none; 
+    
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+html, body{
+    height:100%; width:100%;
+}
+
+.anim{
+    -webkit-transform: translate3d(0px,0px,0px);
+    transform: translate3d(0px,0px,0px);
+}
+.dog{
+    background: url('../img/dog.jpg') no-repeat center center transparent;
+    width: 200px;
+    height: 250px;
+    display: inline-block;
+    position:absolute;
+}
+.fastfood{
+    background: url('../img/fastfood.svg') no-repeat center center transparent;
+    background-size: 100% 100%;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+}
+#animar{
+    position: relative;
+    top: 260px;
+    width: 200px;
+    line-height: 40px;
+    z-index: 10;
+}
+
