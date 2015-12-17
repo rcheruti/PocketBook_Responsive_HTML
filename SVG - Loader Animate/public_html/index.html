@@ -8,9 +8,86 @@
     </head>
     <body>
         
-        <img src="svg/loader.svg" alt="SVG Animado?" />
-        <object type="image/svg+xml" data="svg/loader.svg" ></object>
-        <embed type="image/svg+xml" src="svg/loader.svg" />
+        <div>
+            <img src="svg/loader.svg" alt="SVG Animado?" />
+            <object data="svg/loader.svg" type="image/svg+xml" ></object>
+            <embed src="svg/loader.svg" type="image/svg+xml" />
+            <iframe src="svg/loader.svg"></iframe>
+        </div>
+        <div>
+            
+            <svg>
+                <use xlink:href="svg/loader.svg#svg_circleDentro" />
+            </svg>
+            
+            <object data="svg/loader.svg" type="image/svg+xml" >
+                <embed src="svg/loader.svg" type="image/svg+xml" />
+            </object>
+            
+        </div>
+        
+        
+        
+        <div>
+            
+            <svg class="root" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+            <g>
+                <circle id="svg_circleFora" class="svg_circleFora" fill="none" stroke="#00A9FF" 
+                            stroke-miterlimit="10" stroke-dasharray="12.214,12.214" 
+                            cx="49.9998" cy="50" r="46.6663">
+                        <animateTransform attributeName="transform"
+                            animateType="XML"
+                            type="rotate"
+                            from="0 50 50"
+                            to="360 50 50"
+                            dur="4s"
+                            repeatCount="indefinite"
+                            />
+                    </circle>
+            </g>
+            <circle id="svg_circleDentro" class="svg_circleDentro" fill="#127CB3" cx="49.9998" cy="50" r="37.9993"/>
+            <path fill="#FFFFFF" d="M34,60c0,2.209-1.791,4-4,4l0,0c-2.209,0-4-1.791-4-4V39c0-2.209,1.791-4,4-4l0,0c2.209,0,4,1.791,4,4V60z"
+                />
+            <path fill="#FFFFFF" d="M47,60c0,2.209-1.791,4-4,4l0,0c-2.209,0-4-1.791-4-4V39c0-2.209,1.791-4,4-4l0,0c2.209,0,4,1.791,4,4V60z"
+                />
+            <path fill="#FFFFFF" d="M61,60c0,2.209-1.791,4-4,4l0,0c-2.209,0-4-1.791-4-4V39c0-2.209,1.791-4,4-4l0,0c2.209,0,4,1.791,4,4V60z"
+                />
+            <path fill="#FFFFFF" d="M74,60c0,2.209-1.791,4-4,4l0,0c-2.209,0-4-1.791-4-4V39c0-2.209,1.791-4,4-4l0,0c2.209,0,4,1.791,4,4V60z"
+                />
+
+                    <style>
+                        .svg_circleDentro{
+
+                        }
+                        .svg_circleFora{
+                            -webkit-transition: all 0.6s ease;
+                            transition: all 0.6s ease;
+                            -webkit-transition-timing-function: ease-in;
+                            transition-timing-function: ease-in;
+                            -webkit-transform-origin: center;
+                            transform-origin: center;
+                        }
+                        .root:hover .svg_circleFora{
+                            -webkit-transform: rotateZ(-60deg);
+                            transform: rotate(-60deg);
+                            -webkit-transition-timing-function: ease-out;
+                            transition-timing-function: ease-out;
+                            stroke: darkred;
+                        }
+                        path{
+                            -webkit-transition: all 0.6s ease;
+                            transition: all 0.6s ease;
+                        }
+                        .root:hover path{
+                            fill: orange;
+                            opacity: 0.8;
+                        }
+                    </style>
+
+            </svg>
+
+        </div>
         
         
     </body>
