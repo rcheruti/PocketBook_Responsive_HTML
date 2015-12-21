@@ -1,15 +1,56 @@
 
 *:not(button):not(input){
     margin:0; padding:0; border:none;
+    font-family: Verdana, sans-serif;
 }
-
+*{
+    box-sizing: border-box;
+}
 html,body{
     height:100%; width:100%;
 }
 
-html body *{
-    border: 1px solid red;
+/* ==========  Tela de testes  ================== */
+html body{
+    padding: 20px 40px;
 }
+.quadroTeste{
+    min-width: 140px;
+    min-height: 170px;
+    display: inline-block;
+    padding: 8px 6px; 
+    border: 1px solid #999;
+    border-radius: 3px;
+    margin:5px;
+    vertical-align: top;
+}
+.quadroTeste .titulo{
+    text-align: center;
+    border-bottom: 1px solid #999;
+    padding: 0 0 6px;
+    margin-bottom: 10px;
+    position: relative;
+}
+.quadroTeste .teste{
+    text-align: center;
+}
+.quadroTeste .desc{
+    font-size: 10px;
+    color: #999;
+    text-align: center;
+}
+.quadroTeste .titulo:after{
+    content: "";
+    box-shadow: 0px 2px 4px rgba(0,0,0,  0.2);
+    width: 99%;
+    height: 2px;
+    position: absolute;
+    bottom: -1px;
+    left: 1%;
+}
+
+/* ==========  Testes  ================== */
+
 
 path{
     -webkit-transform: rotateZ(20deg);

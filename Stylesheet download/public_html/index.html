@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        
+        <style>
+                /*  Critical CSS script  */
+            *:not(button):not(input){ margin:0;padding:0;border:none; box-sizing: border-box; }
+            html,body{ width:100%; height:100%; }
+            
+            .quadro{
+                border: 1px solid darkgreen;
+                width: 200px;
+                height: 80px;
+                margin: 0 auto;
+            }
+        </style>
+        <script>
+            (function(){
+                var h = innerHeight, w = innerWidth,
+                    s = '<link type="text/css" rel="stylesheet" href="css/style_$name.css" />';
+                if( w >= 401 && w <= 800 ) document.write( s.replace('$name','w400') );
+                else if( w >= 801 ) document.write( s.replace('$name','w800') );
+            })();
+        </script>
+        
+    </head>
+    <body>
+        
+        <div class="quadro"></div>
+        
+    </body>
+</html>
