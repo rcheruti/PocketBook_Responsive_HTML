@@ -5,6 +5,7 @@
 	<circle  class="svg_circleFora" fill="none" stroke="#00A9FF" 
                 stroke-miterlimit="10" stroke-dasharray="12.214,12.214" 
                 cx="49.9998" cy="50" r="46.6663">
+            <!--
             <animateTransform attributeName="transform"
                 animateType="XML"
                 type="rotate"
@@ -13,6 +14,7 @@
                 dur="4s"
                 repeatCount="indefinite"
                 />
+            -->
         </circle>
 </g>
 <g id="svg_circleDentro" >
@@ -31,19 +33,13 @@
                 
             }
             .svg_circleFora{
-                -webkit-transition: all 0.6s ease;
-                transition: all 0.6s ease;
-                -webkit-transition-timing-function: ease-in;
-                transition-timing-function: ease-in;
+                animation: rodarFora 4s linear infinite;
+                
                 -webkit-transform-origin: center;
-                -moz-transform-origin: center;
                 transform-origin: center;
             }
             .root:hover .svg_circleFora{
-                -webkit-transform: rotateZ(-60deg);
-                transform: rotate(-60deg);
-                -webkit-transition-timing-function: ease-out;
-                transition-timing-function: ease-out;
+                animation: rodarFora_Voltar .4s ease-out ;
                 stroke: darkred;
             }
             path{
@@ -53,6 +49,27 @@
             .root:hover path{
                 fill: orange;
                 opacity: 0.8;
+            }
+            
+            @keyframes rodarFora {
+                0%{ 
+                    -webkit-transform: rotateZ(0deg);
+                    transform: rotateZ(0deg);
+                }
+                100%{
+                    -webkit-transform: rotateZ(360deg);
+                    transform: rotateZ(360deg);
+                }
+            }
+            @keyframes rodarFora_Voltar {
+                0%{ 
+                    -webkit-transform: rotateZ(0deg);
+                    transform: rotateZ(0deg);
+                }
+                100%{
+                    -webkit-transform: rotateZ(-60deg);
+                    transform: rotateZ(-60deg);
+                }
             }
         </style>
         
