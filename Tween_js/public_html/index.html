@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tween.js - Testes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="estilo.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body>
+    
+    <div>Tween.js Teste</div>
+    <div class="menu">
+      <button id="reset">Reset</button>
+      <button id="start">Start</button>
+      <button id="stop">Stop</button>
+      <label>Repeat <input id="repeat" type="number"/></label>
+      <label>Time <input id="time" type="number" value="1000"/></label>
+      <label>
+        Interpolation
+        <select id="interpolation">
+          <option value="1">Linear</option>
+          <option value="2">Bezier</option>
+          <option value="3">CatmullRom</option>
+        </select>
+      </label>
+      
+    </div>
+    
+    
+    <div class="bloco"></div>
+    
+    <script src="Tween.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

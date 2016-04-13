@@ -1,0 +1,23 @@
+
+*{
+  
+}
+html,body{
+  height: 100%;
+  width: 100%;
+  font-family: 'Verdana';
+}
+
+input{
+  width: 80px;
+}
+
+.bloco{
+  width: 40px;
+  height: 40px;
+  border: 2px solid darkred;
+  position: relative;
+  box-shadow: 0 0 22px rgba(124,0,0, 1) inset;
+}
+
+
