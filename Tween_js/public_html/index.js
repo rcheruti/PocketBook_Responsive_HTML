@@ -1,10 +1,4 @@
 
-if( !window.$ ) window.$ = function(str){ return document.querySelector(str); };
-if( !window.$A ) window.$A = function(str){ return document.querySelectorAll(str); };
-window.EventTarget.prototype.on = function(eventName, callback, bubble){
-  return this.addEventListener( eventName, callback, bubble );
-};
-
 function _animacao(){
   requestAnimationFrame(_animacao);
   TWEEN.update();
@@ -23,7 +17,7 @@ function _getTrans( el ){
 
 //=============================================================================
 
-var element = $('.bloco');
+var element = $('.bloco')[0];
 var tween = null ;
 var config = {
   interpolation: TWEEN.Interpolation.Linear ,
@@ -57,11 +51,11 @@ $('#stop').on('click',function(){
   tween.stop();
 });
 $('#repeat').on('change',function(){
-  config.repeat = $('#repeat').value ;
+  config.repeat = $('#repeat')[0].value ;
   tween.repeat( config.repeat );
 });
 $('#time').on('change',function(){
-  config.time = $('#time').value ;
+  config.time = $('#time')[0].value ;
   tween.to({ 
       x: [ 40, 80, 100], 
       y: [ 80, 80,  40]
@@ -73,7 +67,7 @@ var interps = {
   3: TWEEN.Interpolation.CatmullRom 
 };
 $('#interpolation').on('change',function(){
-  var val = $('#interpolation').value ;
+  var val = $('#interpolation')[0].value ;
   config.interpolation = interps[ val ];
   tween.interpolation( config.interpolation );
 });
