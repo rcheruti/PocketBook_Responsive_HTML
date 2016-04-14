@@ -1,9 +1,8 @@
 
-function _animacao(){
-  requestAnimationFrame(_animacao);
-  TWEEN.update();
-}
-requestAnimationFrame(_animacao);
+
+
+
+//=============================================================================
 
   // obj == { x: 0, y: 0, z: 0 }
 function _trans( el, obj ){
@@ -14,8 +13,6 @@ function _getTrans( el ){
   var style = getComputedStyle( el );
   
 }
-
-//=============================================================================
 
 var element = $('.bloco')[0];
 var tween = null ;

@@ -33,14 +33,15 @@
   var $ = function( param ){
     if( !(this instanceof $) ) return new $( param );
     if( param instanceof $ ) return param ;
-    if( typeof param === 'string' ){
-      return ElementProto.find.call( document, param );
-    }
-    if( !(param instanceof Array) ){
-      param = [ param ] ;
-    }
+    if( typeof param === 'string' ) return ElementProto.find.call( document, param );
+    if( typeof param === 'undefined' ) param = [];
+    if( !(param instanceof Array) ) param = [ param ] ;
     
-    this.array = param;
+    //this.array = param;
+    for( var g in param ) this.push( param[g] );
+    if( !this.length ) this.length = 0;
+    
+    _defineProperty( this, 'length', 5 );
     return this;
   };
   var proto = ($.prototype = new Array()) ;
@@ -57,9 +58,21 @@
     return this;
   };
   proto.find = function( str ){
-    _forEachApply();
-    return this;
+    var res = _forEachApply( this, ElementProto.find, [str] );
+    var obj = $();
+    for(var i = 0; i < res.length; i++){
+      var resI = res[i];
+      for(var j = 0; j < resI.length; j++){
+        obj.push( resI[j] );
+      }
+    }
+    return obj;
   };
+  
+  _defineProperty( proto, 'on', 5 );
+  _defineProperty( proto, 'off', 5 );
+  _defineProperty( proto, 'one', 5 );
+  _defineProperty( proto, 'find', 5 );
   
   if( !window.$ ) window.$ = $;
   if( !window.$$ ) window.$$ = $;
@@ -69,6 +82,20 @@
     var ret = [];
     for(var i = 0; i < arr.length; i++) ret.push( func.apply( arr[i], arrApply ) );
     return ret;
+  }
+  function _defineProperty( obj, prop, intConf, conf ){
+    //if( !conf ) conf = {};
+    if( !intConf ) intConf = 0;
+    
+    Object.defineProperty( obj, prop, {
+      configurable: !!(1&intConf),
+      enumerable: !!(2&intConf),
+      writable: !!(4&intConf),
+      iterable: !!(8&intConf),
+      //value: conf.value,
+      //get: conf.get,
+      //set: conf.set
+    });
   }
   
 })(window);
