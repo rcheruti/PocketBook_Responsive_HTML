@@ -1,5 +1,24 @@
 
-
+(function(){
+  has3d();
+  //console.log( 'has3d',has3d() );
+  
+  /*
+  var isColor = /#[0-9a-f]{3,8}|rgba?\s*\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*[.\d]+\s*)\)/i ;
+  console.log( 'isColor.test( "Rgb( 255, 237, 64 )" )' , isColor.test( "Rgb( 255, 237, 64 )" ) );
+  console.log( 'isColor.test( "Rgba( 255, 237, 64, 0.8 )" )' , isColor.test( "Rgba( 255, 237, 64, 0.8 )" ) );
+  console.log( 'isColor.test( "Rgba( 255, 237, 64, .8 )" )' , isColor.test( "Rgba( 255, 237, 64, .8 )" ) );
+  console.log( 'isColor.test( "Rgba( 255, 237, 64, . )" )' , isColor.test( "Rgba( 255, 237, 64, . )" ) );
+  console.log( 'isColor.test( "#888" )' , isColor.test( "#888" ) );
+  console.log( 'isColor.test( "#888" )' , isColor.test( "#888" ) );
+  console.log( 'isColor.test( "#fF8741" )' , isColor.test( "#fF8741" ) );
+  console.log( 'isColor.test( "#fF874101" )' , isColor.test( "#fF874101" ) );
+  /* */
+  
+  Animate.animate( $('.bloco')[0], { opacity: 0.2 }, 1000 ).start();
+  
+  
+})();
 
 
 //=============================================================================
