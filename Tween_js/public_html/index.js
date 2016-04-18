@@ -15,8 +15,12 @@
   console.log( 'isColor.test( "#fF874101" )' , isColor.test( "#fF874101" ) );
   /* */
   
-  Animate.animate( $('.bloco')[0], { opacity: 0.2 }, 1000 ).start();
-  
+  new Animate( $('.bloco')[0] )
+    .to( { opacity: 0.2 } )
+    .repeat( 2 )
+    .yoyo(  )
+    .time( 1000 )
+    .start();
   
 })();
 

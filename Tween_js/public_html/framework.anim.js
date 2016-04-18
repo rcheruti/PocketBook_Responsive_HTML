@@ -72,11 +72,23 @@
   function _isRotateProp( prop ){ return prop==='rx' || prop==='ry' || prop==='rz'; }
   function _isSkewProp( prop ){ return false; }
   
-  function Animate(){
+  function Animate( element ){
+    this._interpolation = TWEEN.Interpolation.Linear;
+    this._easing = TWEEN.Easing.Cubic.Out;
+    this._repeat = 0;
+    this._time = 350;
+    this._delay = 0;
+    this._tween = null;
+    this._to = null;
+    this._from = null;
+    this._el = element;
+    this._chain = null;
     
+    this._repeated = 0;
   }
     // statics:
   Animate.attributes = {};
+  Animate.defaultUnits = requestUnit;
   Animate.raf = function( val ){ 
     animacaoRodando = val; 
     if( val && !animacaoAgendada ){
@@ -85,31 +97,112 @@
     }
   };
   Animate.update = function(){ TWEEN.update(); };
-  Animate.animate = function( el, to, time, from ){
+  
+    // prototype:
+  var proto = Animate.prototype;
+  proto.to = function( val ){
+    this._to = val;
+    return this;
+  };
+  proto.start = function(){
+    if( !this._tween ) this.build();
+    this._tween.start();
+    return this;
+  };
+  proto.stop = function(){
+    this._tween.stop();
+    return this;
+  };
+  proto.update = function(){
+    this._tween.update();
+    return this;
+  };
+  proto.interpolation = function( val ){
+    this._interpolation = val;
+    if( this.t_ween ) this._tween.interpolation( val );
+    return this;
+  };
+  proto.easing = function( val ){
+    this._easing = val;
+    if( this._tween ) this.tween.easing( val );
+    return this;
+  };
+  proto.time = function( val ){
+    this._time = val;
+    //this.tween.stop();
+    return this;
+  };
+  proto.repeat = function( val ){
+    this._repeat = val;
+    if( this._tween ) this._tween.repeat( val );
+    return this;
+  };
+  proto.yoyo = function( val ){
+    this._yoyo = val===false? false : true;
+    if( this._tween ) this._tween.yoyo( this._yoyo );
+    return this;
+  };
+  proto.delay = function( val ){
+    this._delay = val;
+    if( this._tween ) this._tween.delay( val );
+    return this;
+  };
+  proto.chain = function( animateObj ){
+    this._chain = animateObj;
+    if( this._tween ) this._tween.chain( animateObj.tween );
+    return this;
+  };
+  proto.on = function( val, callback ){
+    switch(val){
+      case 'start':
+        this.tween.onStart( callback );
+        break;
+      case 'stop':
+        this.tween.onStop( callback );
+        break;
+      case 'update':
+        this.tween.onUpdate( callback );
+        break;
+      case 'complete':
+        this.tween.onComplete( callback );
+        break;
+      default:
+        console.warn('Animate.Tween: No event dispatcher to "'+ val +'" listeners!');
+    }
+    return this;
+  };
+  proto.build = function(){
+    var obj = {}, objUnit = {}, from = this._from, el = this._el, to = this._to;
     
     if( !from ){
-      from = getComputedStyle( el );
+      this._from = from = getComputedStyle( el );
     }
-    
-    var obj = {}, objUnit = {};
+
     for( var g in to ){
       if( g.toLowerCase() === 'x' ){
         continue;
       }
       var val = to[g], floatVal = parseFloat(val);
-      
+
       if( isFinite( floatVal ) ){
         obj[g] = parseFloat( from[g] ) || 0; 
         var unit = regUnit.exec( val );
-        unit = unit? unit[0] : requestUnit[g];
+        unit = unit? unit[0] : Animate.defaultUnits[g];
         objUnit[g] = unit;
       }else if( isColor.test( val ) ){
         console.warn('Falta impl. de animação para cores!');
       }
     }
-    
+
     var tween = new TWEEN.Tween( obj );
-    tween.to( to, time );
+    this._tween = tween;
+    tween.to( to, this._time );
+    tween.interpolation( this._interpolation );
+    tween.delay( this._delay );
+    tween.repeat( this._repeat );
+    tween.easing( this._easing );
+    tween.yoyo( this._yoyo );
+    if( this._chain ) tween.chain( this._chain.tween ); // <<--  precisa inverter a chamada, o novo Tween ainda não existe (não foi chamado .start)
     tween.onUpdate(function(){
       var vals = this;
       var hasTrans = false, hasScale = false, hasRotate = false, hasSkew = false
@@ -119,26 +212,22 @@
         if( _isScaleProp(g) ){ hasScale = true; continue; }
         if( _isRotateProp(g) ){ hasRotate = true; continue; }
         if( _isSkewProp(g) ){ hasSkew = true; continue; }
-        
+
         el.style[g] = vals[g] +( objUnit[g] || '' );
       }
     });
-    return tween ;
+    
+    return this;
   };
-  
-    // prototype:
-  var proto = Animate.prototype;
   
   //============================================================================
   
   //console.log( fastdom );
  
-  fastdom.measure(function(){
-    //console.log( 'aa', fastdom );
-  });
-  fastdom.mutate(function(){
+  
+  //fastdom.mutate(function(){
     //console.log( 'bb', fastdom );
-  });
+  //});
   
   window.Animate = Animate;
   
