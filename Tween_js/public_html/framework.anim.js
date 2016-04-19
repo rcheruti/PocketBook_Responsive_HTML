@@ -68,9 +68,46 @@
   
     // auxiliar:
   function _isTransProp( prop ){ return prop==='x' || prop==='y' || prop==='z'; }
-  function _isScaleProp( prop ){ return prop==='s' || prop==='scale'; }
+  function _isScaleProp( prop ){ return prop==='sx' || prop==='sy' || prop==='sz'; }
   function _isRotateProp( prop ){ return prop==='rx' || prop==='ry' || prop==='rz'; }
-  function _isSkewProp( prop ){ return false; }
+  function _isSkewProp( prop ){ return prop==='kx' || prop==='ky' || prop==='kz'; }
+  function _parseMatrix( val ){
+    var res = { 
+      x: 0, y: 0, z: 0 ,    // translação
+      sx: 1, sy: 1, sz: 1,  // escala
+      rx: 0, ry: 0, rz: 0,  // rotação (não existe na matrix!)
+      kx: 0, ky: 0, kz: 0   // cisilamento (skew)
+    };
+    if( !val ) return res;
+    if( val.indexOf('matrix3') === 0 ){
+      var arr = val.substring( 9, val.length-1 ).split(/,\s*/);
+      res.sx = arr[0];
+      res.ky = arr[1];
+      // arr[2]; // nada aqui
+      res.kz = arr[ 3 ]; // ???
+      res.kx = arr[4];
+      res.sy = arr[5];
+      // arr[6]; // nada aqui
+      // arr[7]; // skew???
+      // arr[8]; // nada aqui
+      // arr[9]; // nada aqui
+      res.sz = arr[10];
+      // arr[11]; // nada aqui
+      res.x = arr[12];
+      res.y = arr[13];
+      res.z = arr[14];
+      // arr[15]; // algum tipo de nivel de profundidade
+    }else if( val.indexOf('matrix') === 0 ){
+      var arr = val.substring( 7, val.length-1 ).split(/,\s*/);
+      res.sx = arr[0];
+      res.ky = arr[1];
+      res.kx = arr[2];
+      res.sy = arr[3];
+      res.x = arr[4];
+      res.y = arr[5];
+    }
+    return res;
+  }
   
   function Animate( element ){
     this._interpolation = TWEEN.Interpolation.Linear;
@@ -78,12 +115,14 @@
     this._repeat = 0;
     this._time = 350;
     this._delay = 0;
-    this._tween = null;
-    this._to = null;
-    this._from = null;
-    this._el = element;
     this._chain = null;
     
+    this._to = null;
+    this._from = null;
+    this._tween = null;
+    this._el = element;
+    
+    this._recalc = true;
     this._repeated = 0;
   }
     // statics:
@@ -100,12 +139,19 @@
   
     // prototype:
   var proto = Animate.prototype;
-  proto.to = function( val ){
-    this._to = val;
-    return this;
-  };
+  
+  _setVal( proto, 'to' );
+  _setVal( proto, 'time' );
+  _setVal( proto, 'recalc' );
+  
+  _setAndTweenVal( proto, 'interpolation' );
+  _setAndTweenVal( proto, 'easing' );
+  _setAndTweenVal( proto, 'repeat' );
+  _setAndTweenVal( proto, 'yoyo' );
+  _setAndTweenVal( proto, 'delay' );
+  
   proto.start = function(){
-    if( !this._tween ) this.build();
+    if( this._recalc || !this._tween ) this.build();
     this._tween.start();
     return this;
   };
@@ -117,36 +163,7 @@
     this._tween.update();
     return this;
   };
-  proto.interpolation = function( val ){
-    this._interpolation = val;
-    if( this.t_ween ) this._tween.interpolation( val );
-    return this;
-  };
-  proto.easing = function( val ){
-    this._easing = val;
-    if( this._tween ) this.tween.easing( val );
-    return this;
-  };
-  proto.time = function( val ){
-    this._time = val;
-    //this.tween.stop();
-    return this;
-  };
-  proto.repeat = function( val ){
-    this._repeat = val;
-    if( this._tween ) this._tween.repeat( val );
-    return this;
-  };
-  proto.yoyo = function( val ){
-    this._yoyo = val===false? false : true;
-    if( this._tween ) this._tween.yoyo( this._yoyo );
-    return this;
-  };
-  proto.delay = function( val ){
-    this._delay = val;
-    if( this._tween ) this._tween.delay( val );
-    return this;
-  };
+  
   proto.chain = function( animateObj ){
     this._chain = animateObj;
     if( this._tween ) this._tween.chain( animateObj.tween );
@@ -179,7 +196,8 @@
     }
 
     for( var g in to ){
-      if( g.toLowerCase() === 'x' ){
+      if( _isTransProp(g) || _isScaleProp(g) || _isRotateProp(g)
+          || _isSkewProp(g) ){
         continue;
       }
       var val = to[g], floatVal = parseFloat(val);
@@ -221,6 +239,23 @@
   };
   
   //============================================================================
+  
+  function _setVal( proto, method, attr ){
+    attr = attr ||'_' + method ;
+    proto[method] = function( val ){
+      this[attr] = val;
+      return this;
+    };
+  }
+  function _setAndTweenVal( proto, method, attr, tweenMethod ){
+    tweenMethod = tweenMethod || method;
+    attr = attr ||'_' + method ;
+    proto[method] = function( val ){
+      this[attr] = val;
+      if( this._tween ) this._tween.chain( val );
+      return this;
+    };
+  }
   
   //console.log( fastdom );
  

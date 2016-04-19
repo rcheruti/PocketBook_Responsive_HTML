@@ -15,12 +15,22 @@
   console.log( 'isColor.test( "#fF874101" )' , isColor.test( "#fF874101" ) );
   /* */
   
-  new Animate( $('.bloco')[0] )
+  new Animate( $('.bloco2')[0] )
     .to( { opacity: 0.2 } )
-    .repeat( 2 )
-    .yoyo(  )
+    //.repeat( Infinity )
+    .yoyo( true )
     .time( 1000 )
     .start();
+  
+  var animRight = new Animate( $('.bloco2')[0] ).to( { left: '+20' } );
+  var animLeft = new Animate( $('.bloco2')[0] ).to( { left: '-20' } );
+  
+  $('#goRight').on('click', function(){
+    animRight.start();
+  });
+  $('#goLeft').on('click', function(){
+    animLeft.start();
+  });
   
 })();
 
@@ -37,7 +47,7 @@ function _getTrans( el ){
   
 }
 
-var element = $('.bloco')[0];
+var element = $('.bloco1')[0];
 var tween = null ;
 var config = {
   interpolation: TWEEN.Interpolation.Linear ,
