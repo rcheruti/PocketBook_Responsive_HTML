@@ -22,14 +22,15 @@
     .time( 1000 )
     .start();
   
-  var animRight = new Animate( $('.bloco2')[0] ).to( { left: '+20' } );
-  var animLeft = new Animate( $('.bloco2')[0] ).to( { left: '-20' } );
+  var animRight = new Animate( $('.bloco2')[0] ).to( { x: '+20', y:'+10', sx:'+0.1', rz:'+10' } );
+  var animLeft = new Animate( $('.bloco2')[0] ).interpolation( TWEEN.Interpolation.Bezier )
+    .to( { x:[120,86,220], y:[160,270,90] } );
   
   $('#goRight').on('click', function(){
     animRight.start();
   });
   $('#goLeft').on('click', function(){
-    animLeft.start();
+    animLeft.recalc(true).start();
   });
   
 })();

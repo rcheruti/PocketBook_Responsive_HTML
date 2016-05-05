@@ -71,6 +71,13 @@
   function _isScaleProp( prop ){ return prop==='sx' || prop==='sy' || prop==='sz'; }
   function _isRotateProp( prop ){ return prop==='rx' || prop==='ry' || prop==='rz'; }
   function _isSkewProp( prop ){ return prop==='kx' || prop==='ky' || prop==='kz'; }
+  
+  function _toRadians( val ){
+    return val / (180/Math.PI) ;
+  }
+  function _toDegrees( val ){
+    return val * (180/Math.PI) ;
+  }
   function _parseMatrix( val ){
     var res = { 
       x: 0, y: 0, z: 0 ,    // translação
@@ -81,12 +88,13 @@
     if( !val ) return res;
     if( val.indexOf('matrix3') === 0 ){
       var arr = val.substring( 9, val.length-1 ).split(/,\s*/);
-      res.sx = arr[0];
-      res.ky = arr[1];
+      for(var g in arr) arr[g] = parseFloat( arr[g] );
+      res.sx = arr[0]; // rz mult x
+      res.ky = arr[1]; // rz mult x
       // arr[2]; // nada aqui
-      res.kz = arr[ 3 ]; // ???
-      res.kx = arr[4];
-      res.sy = arr[5];
+      res.kz = arr[3]; // ???
+      res.kx = arr[4]; // rz mult y
+      res.sy = arr[5]; // rz mult y
       // arr[6]; // nada aqui
       // arr[7]; // skew???
       // arr[8]; // nada aqui
@@ -97,8 +105,15 @@
       res.y = arr[13];
       res.z = arr[14];
       // arr[15]; // algum tipo de nivel de profundidade
+      
+      // pegar a rotação: // !não é possível encontrar o valor da rotação!
+      //var radSX = Math.acos( res.sx );
+      //var radKY = Math.asin( res.ky );
+      //var radKX = -Math.asin( res.kx );
+      //var radSY = Math.acos( res.sy );
     }else if( val.indexOf('matrix') === 0 ){
       var arr = val.substring( 7, val.length-1 ).split(/,\s*/);
+      for(var g in arr) arr[g] = parseFloat( arr[g] );
       res.sx = arr[0];
       res.ky = arr[1];
       res.kx = arr[2];
@@ -108,6 +123,41 @@
     }
     return res;
   }
+  function _toMatrixStr( obj ){
+    var str;
+    if( has3d() ){
+      str = 'matrix3d('
+        + obj.sx + ','
+        + obj.ky + ','
+        + '0,'
+        + obj.kz + ','
+        + obj.kx + ','
+        + obj.sy + ','
+        + '0,'
+        + '0,'
+        + '0,'
+        + '0,'
+        + obj.sz + ','
+        + '0,'
+        + obj.x  + ','
+        + obj.y  + ','
+        + obj.z  + ','
+        + '1'
+      ;
+    }else{
+      str = 'matrix('
+        + obj.sx + ','
+        + obj.ky + ','
+        + obj.kx + ','
+        + obj.sy + ','
+        + obj.x  + ','
+        + obj.y  
+      ;
+    }
+    str += ')';
+    return str;
+  }
+  
   
   function Animate( element ){
     this._interpolation = TWEEN.Interpolation.Linear;
@@ -119,6 +169,7 @@
     
     this._to = null;
     this._from = null;
+    this._lastFrom = null; // bk do último ciclo
     this._tween = null;
     this._el = element;
     
@@ -141,6 +192,7 @@
   var proto = Animate.prototype;
   
   _setVal( proto, 'to' );
+  _setVal( proto, 'from' );
   _setVal( proto, 'time' );
   _setVal( proto, 'recalc' );
   
@@ -189,20 +241,45 @@
     return this;
   };
   proto.build = function(){
-    var obj = {}, objUnit = {}, from = this._from, el = this._el, to = this._to;
+    var obj = {}, objUnit = {}, from = this._lastFrom , el = this._el, to = this._to;
+    var hasMatrix = false, matrix = null, parsedMatrix = null;
     
+    //console.log( 'from',from );
     if( !from ){
-      this._from = from = getComputedStyle( el );
+      from = getComputedStyle( el );
     }
-
+    
     for( var g in to ){
-      if( _isTransProp(g) || _isScaleProp(g) || _isRotateProp(g)
-          || _isSkewProp(g) ){
+      
+      if( _isTransProp(g) || _isScaleProp(g)
+          || _isRotateProp(g) || _isSkewProp(g) ){
+        if( !hasMatrix ){
+          hasMatrix = true;
+          if( this._from ){
+            parsedMatrix = matrix = from;
+            for( var k in matrix ){
+              if( _isTransProp(k) || _isScaleProp(k)
+                || _isRotateProp(k) || _isSkewProp(k) ){
+                obj[k] = matrix[k];
+                if( !(k in to) ) to[k] = matrix[k];
+              }
+            }
+          }else{
+            parsedMatrix = matrix = _parseMatrix( from.transform );
+            for( var k in matrix ){
+              obj[k] = matrix[k];
+              if( !(k in to) ) to[k] = matrix[k];
+            }
+          }
+          
+        }
+        
         continue;
       }
+      
       var val = to[g], floatVal = parseFloat(val);
-
-      if( isFinite( floatVal ) ){
+      
+      if( isFinite( floatVal ) || to[g] instanceof Array ){
         obj[g] = parseFloat( from[g] ) || 0; 
         var unit = regUnit.exec( val );
         unit = unit? unit[0] : Animate.defaultUnits[g];
@@ -211,8 +288,11 @@
         console.warn('Falta impl. de animação para cores!');
       }
     }
-
-    var tween = new TWEEN.Tween( obj );
+    //console.log( 'obj',obj );
+    this._lastFrom = obj;
+    this._from = obj;
+    
+    var tween = new TWEEN.Tween( JSON.parse(JSON.stringify(obj)) );
     this._tween = tween;
     tween.to( to, this._time );
     tween.interpolation( this._interpolation );
@@ -223,15 +303,23 @@
     if( this._chain ) tween.chain( this._chain.tween ); // <<--  precisa inverter a chamada, o novo Tween ainda não existe (não foi chamado .start)
     tween.onUpdate(function(){
       var vals = this;
-      var hasTrans = false, hasScale = false, hasRotate = false, hasSkew = false
-        ;
+      
       for( var g in vals ){
-        if( _isTransProp(g) ){ hasTrans = true; continue; }
-        if( _isScaleProp(g) ){ hasScale = true; continue; }
-        if( _isRotateProp(g) ){ hasRotate = true; continue; }
-        if( _isSkewProp(g) ){ hasSkew = true; continue; }
-
-        el.style[g] = vals[g] +( objUnit[g] || '' );
+        if( _isTransProp(g) ){
+          matrix[g] = vals[g].toFixed(3) ;
+        }else if( _isScaleProp(g) ){
+          matrix[g] = vals[g].toFixed(3) ;
+        }else if( _isRotateProp(g) ){
+          
+        }else if( _isSkewProp(g) ){
+          
+        }else{
+          el.style[g] = vals[g] +( objUnit[g] || '' );
+        }
+      }
+      
+      if( hasMatrix ){
+        el.style.transform = _toMatrixStr( matrix );
       }
     });
     
