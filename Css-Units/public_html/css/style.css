@@ -1,43 +1,61 @@
 
 *{
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
-*:not(button):not(input){
-    margin:0; padding:0; border:none;
-}
-html, body{ width:100%; height:100%; }
+html, body{ width:100%; height:100%; margin:0; border:0;padding:0; }
 
 
-body > div{
-    position: relative;
-    top: 0;
-    left: 0;
-    padding: 5% 5% 0;
+body{
+  position: relative;
+  top: 0;
+  left: 0;
+  padding: 5% 5%;
+  font-family: monospace;
 }
 .description{
 }
 .description > *{
-    display: inline-block;
-    color: #999;
-    border-left: 1px solid rgba(64,128,255,0.6);
-    width: 40px;
-    font-size: 12px;
-    text-align: center;
+  display: inline-block;
+  color: #999;
+  border-left: 1px solid rgba(64,128,255,0.6);
+  width: 30px;
+  font-size: 10px;
+  text-align: center;
 }
 .description > *:last-of-type{
-    border-right: 1px solid rgba(64,128,255,0.6);
+  border-right: 1px solid rgba(64,128,255,0.6);
 }
 .texts{
-    border: 1px solid rgba(64,128,255,0.6);
-    padding: 10px 0;
+  position: relative;
+  border: 1px solid rgba(64,128,255,0.6);
+  padding: 0 0 10px 0;
 }
-.texts > *{
-    font-family: serif;
-    display: inline-block;
-    vertical-align: bottom;
-    border-bottom: 1px solid red;
-    text-align: center;
-    width: 40px;
+.texts > *:not(.linhaGuia){
+  font-family: serif;
+  display: inline-block;
+  vertical-align: bottom;
+  border-bottom: 1px solid rgba(255,0,0,.3);
+  text-align: center;
+  width: 30px;
+}
+.texts .linhaGuia{
+  position: absolute;
+  height: 0;
+  width: 0;
+}
+.texts .linhaGuia.horizontal{
+  width: 100%;
+  border-bottom: 1px dashed #ccc;
+}
+.texts .linhaGuia.vertical{
+  height: 100%;
+  border-left: 1px dashed #ccc;
+}
+.texts .linhaGuia.linha1{
+  bottom: 14px;
+}
+.texts .linhaGuia.linha2{
+  bottom: 26px;
 }
 .texts ._12px{ font-size: 12px; }
 .texts ._12pt{ font-size: 12pt; }
@@ -51,3 +69,39 @@ body > div{
 .texts ._1-5em{ font-size: 1.5em; }
 
 
+
+.widthsAndHeights{
+  border: 1px solid rgba(64,128,255,0.6);
+  margin-top: 40px;
+  padding: 10px;
+}
+
+.widthsAndHeights .medidas{
+  margin-bottom: 30px;
+}
+.widthsAndHeights .medidas td{
+  text-align: right;
+  padding: 2px 8px;
+}
+.widthsAndHeights .medidas td:first-of-type{
+  text-align: left;
+}
+
+.widthsAndHeights .infosDeTela{
+  
+}
+.widthsAndHeights .infosDeTela td:nth-of-type(1){
+  text-align: left;
+  font-size: 12px;
+}
+.widthsAndHeights .infosDeTela td:nth-of-type(2){
+  text-align: right;
+}
+.widthsAndHeights .infosDeTela td:nth-of-type(3){
+  text-align: left;
+  font-size: 10px;
+}
+
+.obs{
+  margin: 30px 0 20px;
+}

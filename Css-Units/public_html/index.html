@@ -1,40 +1,187 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>CSS - Units</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="css/style.css" rel="stylesheet" type="text/css"/>
-        
-    </head>
-    <body>
-        <div>
-            
-            <div class="texts">
-                <div class="_12px">I</div>
-                <div class="_12pt">I</div>
-                <div class="_16px">I</div>
-                <div class="_16pt">I</div>
-                <div class="_1cm">I</div>
-                <div class="_10mm">I</div>
-                <div class="_0-45cm">I</div>
-                <div class="_4-5mm">I</div>
-                <div class="_1em">I</div>
-                <div class="_1-5em">I</div>
-            </div>
-            <div class="description">
-                <div>12px</div>
-                <div>12pt</div>
-                <div>16px</div>
-                <div>16pt</div>
-                <div>1cm</div>
-                <div>10mm</div>
-                <div>0.45cm</div>
-                <div>4.5mm</div>
-                <div>1em</div>
-                <div>1.5em</div>
-            </div>
-            
-        </div>
-    </body>
+  <head>
+    <title>CSS - Units</title>
+    <meta charset="UTF-8">
+    
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+
+  </head>
+  <body>
+    
+    <div>
+      <button id="toggleViewportTag">Toggle Viewport Tag</button>
+    </div>
+    
+    <div class="texts">
+      <div class="linhaGuia horizontal linha1"></div>
+      <div class="linhaGuia horizontal linha2"></div>
+      
+      <div class="_12pt">I</div>
+      <div class="_1em">I</div>
+      <div class="_16px">I</div>
+      <div class="_16pt">I</div>
+      <div class="_1-5em">I</div>
+      <div class="_1cm">I</div>
+      <div class="_10mm">I</div>
+      <div class="_0-45cm">I</div>
+      <div class="_4-5mm">I</div>
+    </div>
+    <div class="description">
+      <div>12pt</div>
+      <div>1em</div>
+      <div>16px</div>
+      <div>16pt</div>
+      <div>1.5em</div>
+      <div>1cm</div>
+      <div>10mm</div>
+      <div>.45cm</div>
+      <div>4.5mm</div>
+    </div>
+    
+    <div class="widthsAndHeights">
+      
+      <table class="medidas">
+        <tbody>
+          <tr>
+            <td></td>
+            <td>W (px)</td>
+            <td>H (px)</td>
+          </tr>
+          
+          <tr>
+            <td>window inner</td>
+            <td id="windowInnerWidth"></td>
+            <td id="windowInnerHeight"></td>
+          </tr>
+          
+          <tr>
+            <td>window outer</td>
+            <td id="windowOuterWidth"></td>
+            <td id="windowOuterHeight"></td>
+          </tr>
+          
+          <tr>
+            <td>screen</td>
+            <td id="screenWidth"></td>
+            <td id="screenHeight"></td>
+          </tr>
+          
+          <tr>
+            <td>screen available</td>
+            <td id="screenAvailWidth"></td>
+            <td id="screenAvailHeight"></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <table class="infosDeTela">
+        <tbody>
+          
+          <tr>
+            <td>device pixel ratio: </td>
+            <td id="devicePixelRatio"></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>screen color depth: </td>
+            <td id="colorDepth"></td>
+            <td>
+              Qtd de bits por pixel de imagem (de cor).
+              <br/>
+              Ex.: 24px == rgb[8b,8b,8b], rgb(255,255,255)
+            </td>
+          </tr>
+          <tr>
+            <td>screen pixel depth: </td>
+            <td id="pixelDepth"></td>
+            <td>
+              Antigo "colorDepth", use sempre "colorDepth" hoje.
+            </td>
+          </tr>
+          <tr>
+            <td>screen orientation angle: </td>
+            <td id="orientationAngle"></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>screen orientation type: </td>
+            <td id="orientationType"></td>
+            <td></td>
+          </tr>
+          
+        </tbody>
+      </table>
+      
+    </div>
+    
+    <div class="obs">
+      Na CSS, o tamanho de 96px é: 1 inch (polegada).
+      <br/>
+      1 polegada = 2,54 cm (25,4 mm).
+      <br/>
+      96 px = 25,4 mm
+      <br/>
+      1 px = 25,4 mm / 96 = 0,2645833... mm
+      <br/>
+      16 px = 4,233... mm = 1 em
+      <br/>
+      "em" é o tamanho padrão de fonte (na css, 16px)
+    </div>
+    
+    <script>
+      function $(str){ return document.querySelector(str); }
+      function $A(str){ return document.querySelectorAll(str); }
+      EventTarget.prototype.on = function(name, callback, bubble){
+        return this.addEventListener( name, callback, bubble );
+      };
+      EventTarget.prototype.off = function(name, callback, bubble){
+        return this.removeEventListener( name, callback, bubble );
+      };
+      
+      (function(){
+        var metaTag = document.createElement('meta');
+        metaTag.name = 'viewport';
+        metaTag.content = 'width=device-width';
+
+        function getValues(){
+          $('#windowInnerWidth').textContent = window.innerWidth ;
+          $('#windowInnerHeight').textContent = window.innerHeight ;
+          $('#windowOuterWidth').textContent = window.outerWidth ;
+          $('#windowOuterHeight').textContent = window.outerHeight ;
+          $('#screenWidth').textContent = screen.width ;
+          $('#screenHeight').textContent = screen.height ;
+          $('#screenAvailWidth').textContent = screen.availWidth ;
+          $('#screenAvailHeight').textContent = screen.availHeight ;
+
+
+          $('#devicePixelRatio').textContent = window.devicePixelRatio ;
+          $('#colorDepth').textContent = screen.colorDepth ;
+          $('#pixelDepth').textContent = screen.pixelDepth ;
+          $('#orientationAngle').textContent = screen.orientation.angle ;
+          $('#orientationType').textContent = screen.orientation.type ;
+          
+          var jump1 = false;
+          function toggleMeta(ev){
+            if( jump1 )return jump1 = false;
+            if( ev.type === 'touchstart' ){
+              jump1 = true;
+            }
+            var has = $('head meta[name=viewport]');
+            //console.log( has, ev );
+            if( has ){
+              $('head').removeChild( has );
+            }else{
+              $('head').appendChild( metaTag );
+            }
+          }
+          $('#toggleViewportTag').on('mousedown', toggleMeta);
+          $('#toggleViewportTag').on('touchstart', toggleMeta);
+        }
+        document.on('DOMContentLoaded', getValues);
+        window.on('resize', getValues);
+      })();
+    </script>
+    
+  </body>
 </html>
