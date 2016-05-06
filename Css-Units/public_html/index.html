@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     
     <link href="css/style.css" rel="stylesheet" type="text/css"/>
-
+    
   </head>
   <body>
     
@@ -40,6 +40,9 @@
     </div>
     
     <div class="widthsAndHeights">
+      <div>
+        <button id="recalc">Recalc</button>
+      </div>
       
       <table class="medidas">
         <tbody>
@@ -129,6 +132,56 @@
       "em" é o tamanho padrão de fonte (na css, 16px)
     </div>
     
+    <div>
+      <div class="matchMediaMissing">
+        Esse navegador não tem a função "matchMedia" disponível.
+        <br/>
+        Não é possível verificar Media Querys por código.
+      </div>
+      <div class="matchMedia">
+        <div>
+          Media Querys =======================
+        </div>
+        <div>
+          <span>monochrome: </span>
+          <span data-media="monochrome"></span>
+        </div>
+        <div>
+          <span>handheld: </span>
+          <span data-media="handheld"></span>
+        </div>
+        <div>
+          <span>screen: </span>
+          <span data-media="screen"></span>
+        </div>
+        <div>
+          <span>tv: </span>
+          <span data-media="tv"></span>
+        </div>
+        <div>
+          <span>(scan: progressive): </span>
+          <span data-media="(scan: progressive)"></span>
+        </div>
+        <div>
+          <span>(scan: interlace): </span>
+          <span data-media="(scan: interlace)"></span>
+        </div>
+        
+        <div>
+          <span>(grid): </span>
+          <span data-media="(grid)"></span>
+        </div>
+        <div>
+          <span>(orientation: landscape): </span>
+          <span data-media="(orientation: landscape)"></span>
+        </div>
+        <div>
+          <span>(orientation: portrait): </span>
+          <span data-media="(orientation: portrait)"></span>
+        </div>
+      </div>
+    </div>
+    
     <script>
       function $(str){ return document.querySelector(str); }
       function $A(str){ return document.querySelectorAll(str); }
@@ -177,9 +230,23 @@
           }
           $('#toggleViewportTag').on('mousedown', toggleMeta);
           $('#toggleViewportTag').on('touchstart', toggleMeta);
+          
+          if( matchMedia ){
+            var lista = $A('.matchMedia [data-media]'), i = lista.length, el, mediaStr;
+            while( i-- ){
+              el = lista[i];
+              mediaStr = el.attributes.item('data-media').value ;
+              if( matchMedia(mediaStr).matches ) el.textContent = 'Sim';
+              else el.textContent = 'Não';
+            }
+          }
         }
         document.on('DOMContentLoaded', getValues);
         window.on('resize', getValues);
+        $('#recalc').on('click', getValues);
+        
+        if( !matchMedia ) $('.matchMedia').style.display = 'none';
+        else $('.matchMediaMissing').style.display = 'none';
       })();
     </script>
     
