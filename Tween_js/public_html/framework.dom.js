@@ -2,6 +2,9 @@
 (function (window) {
   
   var undefined; // "undefined", deixar essa var sem valor !!!
+  function _isStr( val ){ return typeof val === 'string'; }
+  function _is$( val ){ return val instanceof $; }
+  function _isUndefined( val ){ return val === undefined; }
   
   
   
@@ -145,7 +148,7 @@
       var len = el.length, i = len;
       while( i-- ) this.appendChild( el[len-i-1] );
     }else{
-      this.appendChild( el );
+      this.appendChild( _idStr(el)? _createElFromStr(el) : el );
     }
     return this;
   };
@@ -160,7 +163,9 @@
     return this.parentNode;
   };
   ElementProto.replaceWith = function( el ){
-    return this.parent().replaceChild( el, this );
+    el = _idStr(el)? _createElFromStr(el) : el;
+    this.parent().replaceChild( el, this );
+    return el;
   };
   ElementProto.css = function( obj, val ){
     if( typeof obj === 'string' ){
@@ -220,6 +225,7 @@
       'remove',
       'clone',
       'parent',
+      'append',
       'eq',
       'replaceWith',
       'css',
@@ -266,7 +272,7 @@
         res.push( arrJ[lenJ-j-1] );
       }
     }
-    return $(res);
+    return $( _removeEquals( res ) );
   };
   proto.html = function(str){
     if( !this.length ) return '';
@@ -283,7 +289,10 @@
     return $( _forEachApply(this, ElementProto.clone, [true]) );
   };
   proto.parent = function(){
-    return $( _forEachApply(this, ElementProto.parent) );
+    return $( _removeEquals(  _forEachApply(this, ElementProto.parent) ) );
+  };
+  proto.replaceWith = function(){
+    return $( _removeEquals(  _forEachApply(this, ElementProto.replaceWith, arguments) ) );
   };
   
   
@@ -296,6 +305,7 @@
 
   //===========================================================================
   //    Funções auxiliares
+  
   
   function _normalElementCall(proto, funcName){
     proto[funcName] = function(){
@@ -323,8 +333,27 @@
         //set: conf.set
     });
   }
-
-
+  function _removeEquals( arr ){
+    var len = arr.length, i = len, j;
+    while(i--){
+      j = len - i;
+      while(--j){
+        if( arr[i] === arr[i+j] ) arr.splice(i+j, 1);
+      }
+    }
+    return arr;
+  }
+  function _createElFromStr( str ){
+    var div = document.createElement('div'),
+        frag = document.createDocumentFragment(),
+        len, i;
+    div.innerHTML = str;
+    len = i = div.childNodes.length;
+    while(i--){
+      frag.appendChild( div.childNodes[len-i-1] );
+    }
+    return frag;
+  }
 
 
 
