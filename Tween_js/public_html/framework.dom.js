@@ -4,6 +4,25 @@
   var undefined; // "undefined", deixar essa var sem valor !!!
   
   
+  
+  
+  
+  //===========================================================================
+  //          Function prototype
+  
+  var FunctionProto = window.Function.prototype;
+  if( !FunctionProto.bind ) FunctionProto.bind = function(that){
+    var me = this, arr = Array.prototype.slice(arguments,1);
+    return function(){
+      return me.apply( that, arr );
+    };
+  };
+  
+  
+  
+  
+  
+  
   //===========================================================================
   //          EventTarget prototype
 
@@ -13,10 +32,7 @@
   };
   EventTypeProto.on = function (eventName, callback, useCapture) {
     this.addEventListener(eventName, callback, useCapture);
-    var that = this;
-    return function () {
-      EventTypeProto.off.call(that, eventName, callback, useCapture);
-    };
+    return EventTypeProto.off.bind(this, eventName, callback, useCapture);
   };
   EventTypeProto.one = function (eventName, callback, useCapture, times) {
     if (!times)
@@ -29,12 +45,11 @@
       if (!--times)
         _retirar();
     };
-    _retirar = EventTypeProto.off.bind(this, eventName, _func, useCapture);
-    this.addEventListener(eventName, _func, useCapture);
-    return _retirar;
+    return _retirar = this.on(eventName, _func, useCapture);
   };
   
   EventTypeProto.bind = EventTypeProto.on;
+  EventTypeProto.unbind = EventTypeProto.off;
   
   
   
@@ -56,14 +71,14 @@
   };
   if ('classList' in ElementProto) {
     ElementProto.hasClass = function () {
-      return this.classList.contains( arguments );
+      return this.classList.contains.apply(this.classList, arguments );
     };
     ElementProto.addClass = function () {
-      this.classList.add( arguments );
+      this.classList.add.apply(this.classList, arguments );
       return this;
     };
     ElementProto.removeClass = function () {
-      this.classList.remove( arguments );
+      this.classList.remove.apply(this.classList, arguments );
       return this;
     };
   } else {
@@ -121,13 +136,50 @@
     this.setAttribute( str, val );
     return this;
   };
+  ElementProto.removeAttr = function( str ){
+    this.removeAttribute(str);
+    return this;
+  };
+  ElementProto.append = function( el ){
+    if( el instanceof $ ){
+      var len = el.length, i = len;
+      while( i-- ) this.appendChild( el[len-i-1] );
+    }else{
+      this.appendChild( el );
+    }
+    return this;
+  };
+  if(!ElementProto.remove) ElementProto.remove = function(){
+    this.parentNode.removeChild( this );
+    return this;
+  };
+  ElementProto.clone = function( val ){
+    return this.cloneNode( val );
+  };
+  ElementProto.parent = function(){
+    return this.parentNode;
+  };
+  ElementProto.replaceWith = function( el ){
+    return this.parent().replaceChild( el, this );
+  };
+  ElementProto.css = function( obj, val ){
+    if( typeof obj === 'string' ){
+      if( val === undefined ) 
+        return window.getComputedStyle(this)[obj];
+      this.style[obj] = val;
+    }
+    for( var g in obj ){
+      this.style[g] = obj[g];
+    }
+    return this;
+  };
   
-
+  
 
   //===========================================================================
   //          $ function
 
-  var $ = function (param) {
+  function $(param) {
     if (!(this instanceof $))
       return new $(param);
     if (param instanceof $)
@@ -144,13 +196,14 @@
     if (!this.length)
       this.length = 0;
 
-    _defineProperty(this, 'length', 5);
+    _defineProperty(this, 5, 'length');
     return this;
   };
   var proto = ($.prototype = new Array());
   
   var funcs = [
       'bind',
+      'unbind',
       'on',
       'off',
       'one',
@@ -161,7 +214,17 @@
       'toggleClass',
       'text',
       'empty',
-      'attr'
+      'attr',
+      'removeAttr',
+      'children',
+      'remove',
+      'clone',
+      'parent',
+      'eq',
+      'replaceWith',
+      'css',
+      'chidren',
+      'html'
     ], funcsI = funcs.length;
     
     
@@ -188,11 +251,41 @@
     while( i-- ) if( !res[i] ) return false;
     return true;
   };
-  proto.text = function(){
-    var res = _forEachApply(this, ElementProto.text, arguments);
+  proto.text = function( str ){
+    if( !this.length ) return '';
+    var res = _forEachApply( str===undefined?[this[0]]:this , ElementProto.text, [str]);
+    return res[0];
   };
-
-
+  proto.chidren = function(str){
+    if( str ) return $(_forEachApply(this, ElementProto.find, str));
+    var res = [], len = this.length, i = len, j, lenJ, arrJ;
+    while( i-- ){
+      arrJ = this[len-i-1].children;
+      j = lenJ = arrJ.length;
+      while( j-- ){
+        res.push( arrJ[lenJ-j-1] );
+      }
+    }
+    return $(res);
+  };
+  proto.html = function(str){
+    if( !this.length ) return '';
+    if( str ){
+      _forEachApply(this, ElementProto.html, str);
+      return this;
+    }
+    return this[0].html();
+  };
+  proto.eq = function(val){
+    return $([ this[val] ]);
+  };
+  proto.clone = function(){
+    return $( _forEachApply(this, ElementProto.clone, [true]) );
+  };
+  proto.parent = function(){
+    return $( _forEachApply(this, ElementProto.parent) );
+  };
+  
   
     // bloquear a iteração desses elementos:
   funcsI = funcs.length;

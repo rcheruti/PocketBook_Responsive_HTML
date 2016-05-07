@@ -26,3 +26,8 @@ input{
 .testes2{
   margin: 30px 0 0 0;
 }
+
+
+.bordaVermelha{
+  border: 2px solid red;
+}

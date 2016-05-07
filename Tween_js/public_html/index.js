@@ -15,6 +15,11 @@
   console.log( 'isColor.test( "#fF874101" )' , isColor.test( "#fF874101" ) );
   /* */
   
+  var inputs = $('input');
+  for(var g in inputs){
+    console.log( 'log inputs', g, inputs[g] );
+  }
+  
   new Animate( $('.bloco2')[0] )
     .to( { opacity: 0.2 } )
     //.repeat( Infinity )
