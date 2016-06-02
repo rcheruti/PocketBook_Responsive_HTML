@@ -1,12 +1,18 @@
 
-(function (window) {
+(function (window, document) {
   
-  var undefined; // "undefined", deixar essa var sem valor !!!
-  function _isStr( val ){ return typeof val === 'string'; }
-  function _is$( val ){ return val instanceof $; }
-  function _isUndefined( val ){ return val === undefined; }
+  //===========================================================================
+  //          Polyfills
   
-  
+  // Array.isArray: como no site da MDN (Mozilla)
+  function _isClass(arg, strKlass){
+    return Object.prototype.toString.call(arg) === strKlass;
+  }
+  if (!Array.isArray) {
+    Array.isArray = function(arg) {
+      return _isClass(arg,'[object Array]');
+    };
+  }
   
   
   
@@ -28,7 +34,9 @@
   
   //===========================================================================
   //          EventTarget prototype
-
+  
+  // EventTarget para a maioria dos navegadores
+  // Node para o IE!
   var EventTypeProto = (window.EventTarget || window.Node).prototype;
   EventTypeProto.off = function (eventName, callback, useCapture) {
     return this.removeEventListener(eventName, callback, useCapture);
@@ -65,6 +73,14 @@
   //          Element prototype
 
   var ElementProto = window.Element.prototype;
+  var matchesSelector = ElementProto.matches
+                        || ElementProto.matchesSelector
+                        || ElementProto.webkitMatchesSelector
+                        || ElementProto.mozMatchesSelector
+                        || ElementProto.msMatchesSelector
+                        || ElementProto.oMatchesSelector;
+  if(!ElementProto.matches) ElementProto.matches = function( str ){ return matchesSelector.call(this,str); };
+  
   ElementProto.find = function (str) {
     var nodeList = this.querySelectorAll(str), len = nodeList.length;
     var arr = [];
@@ -72,6 +88,7 @@
       arr.push(nodeList[i]);
     return $(arr);
   };
+  
   if ('classList' in ElementProto) {
     ElementProto.hasClass = function () {
       return this.classList.contains.apply(this.classList, arguments );
@@ -112,9 +129,45 @@
       this.addClass(str);
     return this;
   };
-  ElementProto.text = function (str){
-    if( str === undefined ) return this.textContent;
-    this.textContent = str;
+  
+  ElementProto.after = function(/*...val*/){
+    var len = arguments.length, i = 0, parent = this.parent(), next = this.next();
+    for(; i < len; i++) parent.insertBefore(arguments[i], next );
+  };
+  ElementProto.append = function( el ){
+    if( $.is$(el) ){
+      var len = el.length, i = len;
+      while( i-- ) this.appendChild( el[len-i-1] );
+    }else if( $.isFunc(el) ){
+      this.appendChild( el() );
+    }else{
+      this.appendChild( _idStr(el)? _createElFromStr(el) : el );
+    }
+    return this;
+  };
+  ElementProto.attr = function( str, val ){
+    if( $.isObj(str) ){
+      for( var g in str ){
+        this.setAttribute( g, str[g] );
+      }
+      return this;
+    }
+    if( $.isUndef(val) ) return this.getAttribute( str );
+    this.setAttribute( str, val );
+    return this;
+  };
+  ElementProto.clone = function( val ){
+    return this.cloneNode( val );
+  };
+  ElementProto.css = function( obj, val ){
+    if( $.isString(obj) ){
+      if( $.isUndef(val) ) 
+        return window.getComputedStyle(this)[obj];
+      this.style[obj] = val;
+    }
+    for( var g in obj ){
+      this.style[g] = obj[g];
+    }
     return this;
   };
   ElementProto.empty = function(){
@@ -124,40 +177,18 @@
     return this;
   };
   ElementProto.html = function (str){
-    if( str === undefined ) return this.innerHTML;
+    if( $.isUndef(str) ) return this.innerHTML;
     this.innerHTML = str;
     return this;
   };
-  ElementProto.attr = function( str, val ){
-    if( str instanceof Object ){
-      for( var g in str ){
-        this.setAttribute( g, str[g] );
-      }
-      return this;
+  ElementProto.next = function( str ){
+    if(!str) return this.nextSibling;
+    var el = this;
+    while(el){
+      if( el.matches(str) ) return el;
+      el = el.nextSibling;
     }
-    if( val === undefined ) return this.getAttribute( str );
-    this.setAttribute( str, val );
-    return this;
-  };
-  ElementProto.removeAttr = function( str ){
-    this.removeAttribute(str);
-    return this;
-  };
-  ElementProto.append = function( el ){
-    if( el instanceof $ ){
-      var len = el.length, i = len;
-      while( i-- ) this.appendChild( el[len-i-1] );
-    }else{
-      this.appendChild( _idStr(el)? _createElFromStr(el) : el );
-    }
-    return this;
-  };
-  if(!ElementProto.remove) ElementProto.remove = function(){
-    this.parentNode.removeChild( this );
-    return this;
-  };
-  ElementProto.clone = function( val ){
-    return this.cloneNode( val );
+    return null;
   };
   ElementProto.parent = function(){
     return this.parentNode;
@@ -167,15 +198,19 @@
     this.parent().replaceChild( el, this );
     return el;
   };
-  ElementProto.css = function( obj, val ){
-    if( typeof obj === 'string' ){
-      if( val === undefined ) 
-        return window.getComputedStyle(this)[obj];
-      this.style[obj] = val;
-    }
-    for( var g in obj ){
-      this.style[g] = obj[g];
-    }
+  ElementProto.removeAttr = function( str ){
+    this.removeAttribute(str);
+    return this;
+  };
+  
+  if(!ElementProto.remove) ElementProto.remove = function(){
+    this.parentNode.removeChild( this );
+    return this;
+  };
+  
+  ElementProto.text = function (str){
+    if( $.isUndef(str) ) return this.textContent;
+    this.textContent = str;
     return this;
   };
   
@@ -185,15 +220,15 @@
   //          $ function
 
   function $(param) {
-    if (!(this instanceof $))
+    if (!$.is$(this))
       return new $(param);
-    if (param instanceof $)
+    if ($.is$(param))
       return param;
-    if (typeof param === 'string')
+    if ( $.isString(param) )
       return ElementProto.find.call(document, param);
-    if (typeof param === 'undefined')
+    if ( $.isUndef(param) )
       param = [];
-    if (!(param instanceof Array))
+    if (!$.isArray(param))
       param = [param];
 
     for (var g in param)
@@ -206,31 +241,44 @@
   };
   var proto = ($.prototype = new Array());
   
+  // !!!  Atenção: as linhas comentadas estão pendentes!  !!!
   var funcs = [
+      'addClass',
+      'after',
+      'append',
+      'attr',
       'bind',
-      'unbind',
-      'on',
-      'off',
-      'one',
+      'children',
+      'clone',
+      //'contents',
+      'css',
+      //'data',
+      //'detach',
+      'empty',
+      'eq',
       'find',
       'hasClass',
-      'addClass',
-      'removeClass',
-      'toggleClass',
-      'text',
-      'empty',
-      'attr',
-      'removeAttr',
-      'children',
-      'remove',
-      'clone',
+      'html',
+      'next',
+      'off',
+      'on',
+      'one',
       'parent',
-      'append',
-      'eq',
+      //'prepend',
+      //'prop',
+      //'ready',
+      'remove',
+      'removeAttr',
+      'removeClass',
+      //'removeData',
       'replaceWith',
-      'css',
-      'chidren',
-      'html'
+      'text',
+      'toggleClass',
+      //'triggerHandle',
+      'unbind',
+      //'val',
+      //'wrap',
+      
     ], funcsI = funcs.length;
     
     
@@ -259,7 +307,7 @@
   };
   proto.text = function( str ){
     if( !this.length ) return '';
-    var res = _forEachApply( str===undefined?[this[0]]:this , ElementProto.text, [str]);
+    var res = _forEachApply( $.isUndef(str)?[this[0]]:this , ElementProto.text, [str]);
     return res[0];
   };
   proto.chidren = function(str){
@@ -294,6 +342,19 @@
   proto.replaceWith = function(){
     return $( _removeEquals(  _forEachApply(this, ElementProto.replaceWith, arguments) ) );
   };
+  
+  
+    // Adicionar funções auxiliares:
+  $.is$ = function(val){ return val instanceof $; };
+  $.isArray = function(val){ return Array.isArray(val); };
+  $.isDate = function(val){ return _isClass(val,'[object Date]'); };
+  $.isDef = function(val){ return !$.isUndef(val); };
+  $.isFunc = function(val){ return (typeof val === 'function'); };
+  $.isNumber = function(val){ return !isNaN(parseFloat(val)) && isFinite(val); };
+  $.isObj = function(val){ return val && (typeof val === 'object') && !proto.isArray(val); };
+  $.isString = function(val){ return (typeof val === 'string'); };
+  $.isUndef = function(val){ return (typeof val === 'undefined'); };
+  
   
   
     // bloquear a iteração desses elementos:
@@ -371,4 +432,4 @@
   
   
 
-})(window);
+})(window, document);
