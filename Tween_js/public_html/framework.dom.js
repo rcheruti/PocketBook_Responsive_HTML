@@ -198,6 +198,23 @@
     }
     return this;
   };
+  ElementProto.data = function( keyOrObj, val ){
+    if( !this._data ) this._data = {};
+    if( $.isObj(keyOrObj) ){
+      for(var g in keyOrObj){
+        this._data[g] = keyOrObj[g];
+      }
+    }else if( $.isUndef(val) ){
+      return this._data[keyOrObj] || (this._data[keyOrObj] = _getDataAttr(this, keyOrObj));
+    }else{
+      this._data[keyOrObj] = val;
+    }
+    return this;
+  };
+  ElementProto.detach = function(str){
+    this.remove(str);
+    return this;
+  };
   ElementProto.empty = function(){
     while(this.hasChildNodes()) {
       this.removeChild(this.firstChild);
@@ -241,13 +258,30 @@
     this.parent().replaceChild( el, this );
     return el;
   };
+  
+  var selfRemove = ElementProto.remove || function(){
+    this.parentNode.removeChild( this );
+  };
+  ElementProto.remove = function( str ){
+    if(!str) selfRemove.call(this);
+    else this.find(str).remove();
+    return this;
+  };
   ElementProto.removeAttr = function( str ){
     this.removeAttribute(str);
     return this;
   };
-  
-  if(!ElementProto.remove) ElementProto.remove = function(){
-    this.parentNode.removeChild( this );
+  ElementProto.removeData = function( strOrArr ){
+    if( this._data ) {
+      if( $.isString(strOrArr) ){
+        strOrArr = strOrArr.split(/\s+/);
+      }
+      for(var g in strOrArr){
+        var str = strOrArr[g];
+        delete this._data[str];
+        this.removeAttribute( _toDataAttrStr(str) );
+      }
+    }
     return this;
   };
   
@@ -255,6 +289,27 @@
     if( $.isUndef(str) ) return this.textContent;
     this.textContent = str;
     return this;
+  };
+  ElementProto.wrap = function( param ){
+    var wrapEl, parent = this.parent() ;
+    if( $.is$(param) ){
+      if( !param.length ) return this;
+      param = param[0];
+    }
+    
+    if( $.isString(param) ){
+      wrapEl = _createElFromStr( param );
+    }else if( _isClass(param, '[object Text]') ){
+      wrapEl = _createElFromStr( param.textContent );
+    }else{
+      wrapEl = param;
+    }
+    
+    if( parent ){
+      this.replaceWith( wrapEl );
+    }
+    wrapEl.append( this );
+    return $(wrapEl);
   };
   
   
@@ -284,7 +339,7 @@
   };
   var proto = ($.prototype = new Array());
   
-  // !!!  Atenção: as linhas comentadas estão pendentes!  !!!
+  // !!!  Atenção: as linhas comentadas, com traços, estão pendentes!  !!!
   var funcs = [
       'addClass',
       'after',
@@ -292,12 +347,12 @@
       'attr',
       'before',
       'bind',
-      'children',
+      //'children',
       'clone',
       //'contents',
       'css',
-      //'data',
-      //'detach',
+      'data',
+      'detach',
       'empty',
       'eq',
       'find',
@@ -309,19 +364,19 @@
       'one',
       'parent',
       'prepend',
-      //'prop',
-      //'ready',
+      //--- 'prop',
+      //--- 'ready',
       'remove',
       'removeAttr',
       'removeClass',
-      //'removeData',
+      'removeData',
       'replaceWith',
       'text',
       'toggleClass',
-      //'triggerHandle',
+      //--- 'triggerHandle',
       'unbind',
-      //'val',
-      //'wrap',
+      //--- 'val',
+      'wrap',
       
     ], funcsI = funcs.length;
     
@@ -354,7 +409,9 @@
     var res = _forEachApply( $.isUndef(str)?[this[0]]:this , ElementProto.text, [str]);
     return res[0];
   };
-  proto.chidren = function(str){
+  proto.children = function(str){
+    return $(_forEachApply(this, ElementProto.find, str?str:'*'));
+    /*
     if( str ) return $(_forEachApply(this, ElementProto.find, str));
     var res = [], len = this.length, i = len, j, lenJ, arrJ;
     while( i-- ){
@@ -365,6 +422,18 @@
       }
     }
     return $( _removeEquals( res ) );
+    /* */
+  };
+  proto.contents = function(){
+    var res = [], len = this.length, i = len, j, lenJ, arrJ;
+    while( i-- ){
+      arrJ = this[len-i-1].childNodes;
+      j = lenJ = arrJ.length;
+      while( j-- ){
+        res.push( arrJ[lenJ-j-1] );
+      }
+    }
+    return $( res );
   };
   proto.html = function(str){
     if( !this.length ) return '';
@@ -448,8 +517,8 @@
     }
     return arr;
   }
-  function _elStr( str ){
-    return /^\s*</.test(str);
+  function _elStr( objOrStr ){
+    return $.isString(objOrStr) && /^\s*</.test(objOrStr);
   }
   function _createElFromStr( str ){
     var div = document.createElement('div'),
@@ -462,8 +531,26 @@
     }
     return frag;
   }
-
-
+  
+  function _toDataKeyStr( key ){
+    key = key.replace(/^data-/, '');
+    var reg = /-([\w\d])/g, letra = null;
+    while( (letra = reg.exec(key)) ){
+      key = key.replace( letra[0], letra[1].toUpperCase() );
+    }
+    return key;
+  }
+  function _toDataAttrStr( key ){
+    var reg = /[A-Z]/g, letra = null;
+    while( (letra = reg.exec(key)) ){
+      key = key.replace( letra[0], '-'+letra[0].toLowerCase() );
+    }
+    key = 'data-'+ key;
+    return key;
+  }
+  function _getDataAttr(el, key){
+    return el.getAttribute( _toDataAttrStr(key) );
+  }
 
 
 
