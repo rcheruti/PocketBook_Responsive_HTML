@@ -80,6 +80,7 @@
                         || ElementProto.msMatchesSelector
                         || ElementProto.oMatchesSelector;
   if(!ElementProto.matches) ElementProto.matches = function( str ){ return matchesSelector.call(this,str); };
+  ElementProto.is = ElementProto.matches ;
   
   ElementProto.find = function (str) {
     var nodeList = this.querySelectorAll(str), len = nodeList.length;
@@ -253,6 +254,13 @@
     }
     return this;
   };
+  ElementProto.prop = function( key, val ){
+    if( $.isUndef(val) ){
+      return !!this[key];
+    }
+    this[key] = !!val;
+    return this;
+  };
   ElementProto.replaceWith = function( el ){
     el = _elStr(el)? _createElFromStr(el) : el;
     this.parent().replaceChild( el, this );
@@ -288,6 +296,52 @@
   ElementProto.text = function (str){
     if( $.isUndef(str) ) return this.textContent;
     this.textContent = str;
+    return this;
+  };
+  ElementProto.val = function( strOrFunc ){
+    var nodeName = this.nodeName;
+    if( $.isUndef(strOrFunc) ){
+      var val;
+      if( nodeName === 'INPUT' || nodeName === 'TEXTAREA' ){
+        val = this.value;
+      }else if( nodeName === 'SELECT' ){
+        if( this.type === 'select-multiple' ){
+          val = [];
+          var sels = this.selectedOptions, len = sels.length, i = 0;
+          for(; i < len; i++) val.push( sels[i].value );
+        }else{
+          val = this.value;
+        }
+      }
+      else val = this.text();
+      return val;
+    }else{
+      function __v(){ return ; }
+      var vals = $.isFunc(strOrFunc)?strOrFunc():strOrFunc,
+          valsStr = '';
+      if( $.isArray(vals) ) valsStr = vals.length? vals[0] : '';
+      else valsStr = vals;
+      
+      if( nodeName === 'INPUT' || nodeName === 'TEXTAREA' ){
+        this.value = valsStr;
+      }else if( nodeName === 'SELECT' ){
+        if( this.type === 'select-multiple' ){
+          var sels = this.options, len = sels.length, i = 0;
+          if( !$.isArray(vals) ) vals = [ vals ];
+          
+          for(i = 0; i < len; i++) sels[i].selected = false;
+          for(var j = 0; j < vals.length; j++){
+            for(i = 0; i < len; i++){
+              var el = sels[i];
+              if( el.value === vals[j] ) el.selected = true;
+            }
+          }
+        }else{
+          this.value = valsStr;
+        }
+      }
+      else this.text( __v() );
+    }
     return this;
   };
   ElementProto.wrap = function( param ){
@@ -348,34 +402,35 @@
       'before',
       'bind',
       //'children',
-      'clone',
+      //'clone',
       //'contents',
       'css',
       'data',
       'detach',
       'empty',
-      'eq',
-      'find',
-      'hasClass',
-      'html',
+      //'eq',
+      //'find',
+      //'hasClass',
+      //'html',
+      //'is',
       'next',
       'off',
       'on',
       'one',
       'parent',
       'prepend',
-      //--- 'prop',
+      //'prop',
       //--- 'ready',
       'remove',
       'removeAttr',
       'removeClass',
       'removeData',
       'replaceWith',
-      'text',
+      //'text',
       'toggleClass',
       //--- 'triggerHandle',
       'unbind',
-      //--- 'val',
+      //'val',
       'wrap',
       
     ], funcsI = funcs.length;
@@ -388,6 +443,18 @@
   
     //  Sobreescrever as funções que precisam de comportamento 'especial':
     
+  proto.children = function(str){
+    return $( _childrenAndContents(this, str, 'children') );
+  };
+  proto.clone = function(){
+    return $( _forEachApply(this, ElementProto.clone, [true]) );
+  };
+  proto.contents = function(str){
+    return $( _childrenAndContents(this, str, 'childNodes') );
+  };
+  proto.eq = function(val){
+    return $([ this[val] ]);
+  };
   proto.find = function (str) {
     var res = _forEachApply(this, ElementProto.find, [str]);
     var obj = $(), len = res.length;
@@ -404,37 +471,6 @@
     while( i-- ) if( !res[i] ) return false;
     return true;
   };
-  proto.text = function( str ){
-    if( !this.length ) return '';
-    var res = _forEachApply( $.isUndef(str)?[this[0]]:this , ElementProto.text, [str]);
-    return res[0];
-  };
-  proto.children = function(str){
-    return $(_forEachApply(this, ElementProto.find, str?str:'*'));
-    /*
-    if( str ) return $(_forEachApply(this, ElementProto.find, str));
-    var res = [], len = this.length, i = len, j, lenJ, arrJ;
-    while( i-- ){
-      arrJ = this[len-i-1].children;
-      j = lenJ = arrJ.length;
-      while( j-- ){
-        res.push( arrJ[lenJ-j-1] );
-      }
-    }
-    return $( _removeEquals( res ) );
-    /* */
-  };
-  proto.contents = function(){
-    var res = [], len = this.length, i = len, j, lenJ, arrJ;
-    while( i-- ){
-      arrJ = this[len-i-1].childNodes;
-      j = lenJ = arrJ.length;
-      while( j-- ){
-        res.push( arrJ[lenJ-j-1] );
-      }
-    }
-    return $( res );
-  };
   proto.html = function(str){
     if( !this.length ) return '';
     if( str ){
@@ -443,17 +479,32 @@
     }
     return this[0].html();
   };
-  proto.eq = function(val){
-    return $([ this[val] ]);
-  };
-  proto.clone = function(){
-    return $( _forEachApply(this, ElementProto.clone, [true]) );
+  proto.is = function(/*...*/){
+    if(!this.length) return false;
+    return ElementProto.is.apply(this[0], arguments);
   };
   proto.parent = function(){
     return $( _removeEquals(  _forEachApply(this, ElementProto.parent) ) );
   };
+  proto.prop = function( key, val ){
+    if( !this.length ) return false;
+    if( $.isUndef(val) ){
+      return ElementProto.prop.call( this[0], key );
+    }
+    _forEachApply(this, ElementProto.prop, [key, val]);
+    return this;
+  };
   proto.replaceWith = function(){
     return $( _removeEquals(  _forEachApply(this, ElementProto.replaceWith, arguments) ) );
+  };
+  proto.text = function( str ){
+    if( !this.length ) return '';
+    var res = _forEachApply( $.isUndef(str)?[this[0]]:this , ElementProto.text, [str]);
+    return res[0];
+  };
+  proto.val = function(/*...*/){
+    if(!this.length) return null;
+    return ElementProto.val.apply(this[0], arguments);
   };
   
   
@@ -530,6 +581,19 @@
       frag.appendChild( div.childNodes[len-i-1] );
     }
     return frag;
+  }
+  
+  function _childrenAndContents( that, str, attr ){
+    var res = [], len = that.length, i = len, j, lenJ, arrJ, el;
+    while( i-- ){
+      arrJ = that[len-i-1][attr]; //  <<---  "children" (sem textos) ou "childNodes" (com textos)
+      j = lenJ = arrJ.length;
+      while( j-- ){
+        el = arrJ[lenJ-j-1];
+        if( !str || (el.nodeType !== 3 && el.matches(str)) ) res.push( el );
+      }
+    }
+    return res;
   }
   
   function _toDataKeyStr( key ){
