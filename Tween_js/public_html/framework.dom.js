@@ -131,17 +131,31 @@
   };
   
   ElementProto.after = function(/*...val*/){
-    var len = arguments.length, i = 0, parent = this.parent(), next = this.next();
-    for(; i < len; i++) parent.insertBefore(arguments[i], next );
+    var el, lenArg = arguments.length, j = 0, parent = this.parent(), next = this.next();
+    for(; j < lenArg; j++){ 
+      el = arguments[j-1];
+      if( $.is$(el) ){
+        var len = el.length, i = len;
+        while( i-- ) parent.insertBefore( el[len-i-1], next );
+      }else if( $.isFunc(el) ){
+        parent.insertBefore( el(), next );
+      }else{
+        parent.insertBefore( _elStr(el)? _createElFromStr(el) : el, next );
+      }
+    }
   };
-  ElementProto.append = function( el ){
-    if( $.is$(el) ){
-      var len = el.length, i = len;
-      while( i-- ) this.appendChild( el[len-i-1] );
-    }else if( $.isFunc(el) ){
-      this.appendChild( el() );
-    }else{
-      this.appendChild( _idStr(el)? _createElFromStr(el) : el );
+  ElementProto.append = function(/*...el*/){
+    var el, lenArg = arguments.length, j = 0;
+    for(; j < lenArg; j++){
+      el = arguments[j];
+      if( $.is$(el) ){
+        var len = el.length, i = len;
+        while( i-- ) this.appendChild( el[len-i-1] );
+      }else if( $.isFunc(el) ){
+        this.appendChild( el() );
+      }else{
+        this.appendChild( _elStr(el)? _createElFromStr(el) : el );
+      }
     }
     return this;
   };
@@ -155,6 +169,20 @@
     if( $.isUndef(val) ) return this.getAttribute( str );
     this.setAttribute( str, val );
     return this;
+  };
+  ElementProto.before = function(/*...el*/){
+    var el, lenArg = arguments.length, j = lenArg, parent = this.parent();
+    for(; j > 0; j--){ 
+      el = arguments[j-1];
+      if( $.is$(el) ){
+        var len = el.length, i = len;
+        while( i-- ) parent.insertBefore( el[len-i-1], this );
+      }else if( $.isFunc(el) ){
+        parent.insertBefore( el(), this );
+      }else{
+        parent.insertBefore( _elStr(el)? _createElFromStr(el) : el, this );
+      }
+    }
   };
   ElementProto.clone = function( val ){
     return this.cloneNode( val );
@@ -193,8 +221,23 @@
   ElementProto.parent = function(){
     return this.parentNode;
   };
+  ElementProto.prepend = function( /*...el*/ ){
+    var el, lenArg = arguments.length, j = lenArg;
+    for(; j > 0; j--){
+      el = arguments[j-1];
+      if( $.is$(el) ){
+        var len = el.length, i = len;
+        while( i-- ) this.insertBefore( el[len-i-1], this.firstChild );
+      }else if( $.isFunc(el) ){
+        this.insertBefore( el(), this.firstChild );
+      }else{
+        this.insertBefore( _elStr(el)? _createElFromStr(el) : el, this.firstChild );
+      }
+    }
+    return this;
+  };
   ElementProto.replaceWith = function( el ){
-    el = _idStr(el)? _createElFromStr(el) : el;
+    el = _elStr(el)? _createElFromStr(el) : el;
     this.parent().replaceChild( el, this );
     return el;
   };
@@ -247,6 +290,7 @@
       'after',
       'append',
       'attr',
+      'before',
       'bind',
       'children',
       'clone',
@@ -264,7 +308,7 @@
       'on',
       'one',
       'parent',
-      //'prepend',
+      'prepend',
       //'prop',
       //'ready',
       'remove',
@@ -403,6 +447,9 @@
       }
     }
     return arr;
+  }
+  function _elStr( str ){
+    return /^\s*</.test(str);
   }
   function _createElFromStr( str ){
     var div = document.createElement('div'),
