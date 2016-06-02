@@ -392,9 +392,16 @@
     return this;
   };
   var proto = ($.prototype = new Array());
+  $.fn = proto;
   
   // !!!  Atenção: as linhas comentadas, com traços, estão pendentes!  !!!
-  var funcs = [
+  var 
+    GETTER = 1,
+    SETTER = 2,
+    GETTER_FIRST = 3,
+    MIX = 4,
+    MIX_GETTER_FIRST = 5,
+    funcs = [
       'addClass',
       'after',
       'append',
@@ -532,6 +539,12 @@
   //    Funções auxiliares
   
   
+  function _normalElementCall__2(proto, funcName, mode){
+    proto[funcName] = function(){
+      _forEachApply(this, ElementProto[funcName], arguments);
+      return this;
+    };
+  }
   function _normalElementCall(proto, funcName){
     proto[funcName] = function(){
       _forEachApply(this, ElementProto[funcName], arguments);
