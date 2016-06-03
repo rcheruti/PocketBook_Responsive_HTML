@@ -228,7 +228,7 @@
     return this;
   };
   ElementProto.next = function( str ){
-    if(!str) return this.nextSibling;
+    if(!str) return this.nextElementSibling;
     var el = this;
     while(el){
       if( el.matches(str) ) return el;
@@ -352,9 +352,9 @@
     }
     
     if( $.isString(param) ){
-      wrapEl = _createElFromStr( param );
+      wrapEl = _createElFromStr( param ).firstChild;
     }else if( _isClass(param, '[object Text]') ){
-      wrapEl = _createElFromStr( param.textContent );
+      wrapEl = _createElFromStr( param.textContent ).firstChild;
     }else{
       wrapEl = param;
     }
@@ -362,8 +362,8 @@
     if( parent ){
       this.replaceWith( wrapEl );
     }
-    wrapEl.append( this );
-    return $(wrapEl);
+    wrapEl.append(this);
+    return this;
   };
   
   
@@ -394,7 +394,28 @@
   var proto = ($.prototype = new Array());
   $.fn = proto;
   
+    // Adicionar funções auxiliares:
+  $.is$ = function(val){ return val instanceof $; };
+  $.isArray = function(val){ return Array.isArray(val); };
+  $.isDate = function(val){ return _isClass(val,'[object Date]'); };
+  $.isDef = function(val){ return !$.isUndef(val); };
+  $.isFunc = function(val){ return (typeof val === 'function'); };
+  $.isNumber = function(val){ return !isNaN(parseFloat(val)) && isFinite(val); };
+  $.isObj = function(val){ return val && (typeof val === 'object') && !proto.isArray(val); };
+  $.isString = function(val){ return (typeof val === 'string'); };
+  $.isUndef = function(val){ return (typeof val === 'undefined'); };
+  
+  
   // !!!  Atenção: as linhas comentadas, com traços, estão pendentes!  !!!
+  
+    // modes:
+  var 
+    GETTER = 1,
+    SETTER = 2,
+    GETTER_FIRST = 3,
+    MIX = 4,
+    MIX_GETTER_FIRST = 5;
+    
   var funcs = [
       ['addClass'         ,SETTER             ],
       ['after'            ,GETTER_FIRST       ,null],
@@ -409,10 +430,10 @@
       ['data'             ,MIX_GETTER_FIRST   ,null],
       ['detach'           ,SETTER             ],
       ['empty'            ,SETTER             ],
-      //['eq'               ,GETTER],
+      //['eq'               ,GETTER             ],
       ['find'             ,GETTER             ],
       ['hasClass'         ,GETTER_FIRST       ,false],
-      ['html'             ,GETTER_FIRST       ,''],
+      ['html'             ,MIX_GETTER_FIRST   ,''],
       ['is'               ,GETTER_FIRST       ,false],
       ['next'             ,GETTER_FIRST       ,null],
       ['off'              ,SETTER             ],
@@ -453,19 +474,6 @@
     return $([ this[val] ]);
   };
   
-  
-    // Adicionar funções auxiliares:
-  $.is$ = function(val){ return val instanceof $; };
-  $.isArray = function(val){ return Array.isArray(val); };
-  $.isDate = function(val){ return _isClass(val,'[object Date]'); };
-  $.isDef = function(val){ return !$.isUndef(val); };
-  $.isFunc = function(val){ return (typeof val === 'function'); };
-  $.isNumber = function(val){ return !isNaN(parseFloat(val)) && isFinite(val); };
-  $.isObj = function(val){ return val && (typeof val === 'object') && !proto.isArray(val); };
-  $.isString = function(val){ return (typeof val === 'string'); };
-  $.isUndef = function(val){ return (typeof val === 'undefined'); };
-  
-  
     // bloquear a iteração desses elementos:
   for(var g in proto){ 
     _defineProperty(proto, 5, g);
@@ -476,14 +484,6 @@
   //    Funções auxiliares
   
   
-    // modes:
-  var 
-    GETTER = 1,
-    SETTER = 2,
-    GETTER_FIRST = 3,
-    MIX = 4,
-    MIX_GETTER_FIRST = 5;
-    
   function _normalElementCall(proto, funcName, mode, valorQuandoLenZero ){
     if( $.isUndef(valorQuandoLenZero) ) valorQuandoLenZero = null;
     
@@ -525,13 +525,6 @@
         break;
     }
     
-    
-  }
-  function _normalElementCall__2(proto, funcName){
-    proto[funcName] = function(){
-      _forEachApply(this, ElementProto[funcName], arguments);
-      return this;
-    };
   }
   function _forEachApply(arr, func, arrApply) {
     var ret = [], len = arr.length;
@@ -553,6 +546,7 @@
         //set: conf.set
     });
   }
+  
   function _removeEquals( arr ){
     var len = arr.length, i = len, j;
     while(i--){
