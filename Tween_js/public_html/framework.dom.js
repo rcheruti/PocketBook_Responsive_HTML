@@ -395,123 +395,62 @@
   $.fn = proto;
   
   // !!!  Atenção: as linhas comentadas, com traços, estão pendentes!  !!!
-  var 
-    GETTER = 1,
-    SETTER = 2,
-    GETTER_FIRST = 3,
-    MIX = 4,
-    MIX_GETTER_FIRST = 5,
-    funcs = [
-      'addClass',
-      'after',
-      'append',
-      'attr',
-      'before',
-      'bind',
-      //'children',
-      //'clone',
-      //'contents',
-      'css',
-      'data',
-      'detach',
-      'empty',
-      //'eq',
-      //'find',
-      //'hasClass',
-      //'html',
-      //'is',
-      'next',
-      'off',
-      'on',
-      'one',
-      'parent',
-      'prepend',
-      //'prop',
-      //--- 'ready',
-      'remove',
-      'removeAttr',
-      'removeClass',
-      'removeData',
-      'replaceWith',
-      //'text',
-      'toggleClass',
-      //--- 'triggerHandle',
-      'unbind',
-      //'val',
-      'wrap',
-      
+  var funcs = [
+      ['addClass'         ,SETTER             ],
+      ['after'            ,GETTER_FIRST       ,null],
+      ['append'           ,SETTER             ],
+      ['attr'             ,MIX_GETTER_FIRST   ,null],
+      ['before'           ,GETTER_FIRST       ,null],
+      ['bind'             ,SETTER             ],
+      //['children'         ,GETTER             ],
+      ['clone'            ,GETTER             ],
+      //['contents'         ,GETTER             ],
+      ['css'              ,MIX_GETTER_FIRST   ,null],
+      ['data'             ,MIX_GETTER_FIRST   ,null],
+      ['detach'           ,SETTER             ],
+      ['empty'            ,SETTER             ],
+      //['eq'               ,GETTER],
+      ['find'             ,GETTER             ],
+      ['hasClass'         ,GETTER_FIRST       ,false],
+      ['html'             ,GETTER_FIRST       ,''],
+      ['is'               ,GETTER_FIRST       ,false],
+      ['next'             ,GETTER_FIRST       ,null],
+      ['off'              ,SETTER             ],
+      ['on'               ,SETTER             ],
+      ['one'              ,SETTER             ],
+      ['parent'           ,GETTER             ],
+      ['prepend'          ,SETTER             ],
+      ['prop'             ,MIX_GETTER_FIRST   ,null],
+      //--- ['ready'],
+      ['remove'           ,SETTER             ],
+      ['removeAttr'       ,SETTER             ],
+      ['removeClass'      ,SETTER             ],
+      ['removeData'       ,SETTER             ],
+      ['replaceWith'      ,SETTER             ],
+      ['text'             ,MIX_GETTER_FIRST   ,''],
+      ['toggleClass'      ,SETTER             ],
+      //--- ['triggerHandle'],
+      ['unbind'           ,SETTER             ],
+      ['val'              ,MIX_GETTER_FIRST   ,''],
+      ['wrap'             ,SETTER             ]
     ], funcsI = funcs.length;
     
     
     // comportamento padrão;
   while( funcsI-- ){ 
-     _normalElementCall(proto, funcs[funcsI]);
+    var el = funcs[funcsI];
+    _normalElementCall(proto, el[0], el[1], el.length>2? el[2] : 0);
   }
   
-    //  Sobreescrever as funções que precisam de comportamento 'especial':
-    
+  
   proto.children = function(str){
     return $( _childrenAndContents(this, str, 'children') );
-  };
-  proto.clone = function(){
-    return $( _forEachApply(this, ElementProto.clone, [true]) );
   };
   proto.contents = function(str){
     return $( _childrenAndContents(this, str, 'childNodes') );
   };
   proto.eq = function(val){
     return $([ this[val] ]);
-  };
-  proto.find = function (str) {
-    var res = _forEachApply(this, ElementProto.find, [str]);
-    var obj = $(), len = res.length;
-    for (var i = 0; i < len; i++) {
-      var resI = res[i], lenI = resI.length;
-      for (var j = 0; j < lenI; j++) {
-        obj.push(resI[j]);
-      }
-    }
-    return obj;
-  };
-  proto.hasClass = function(){
-    var res = _forEachApply(this, ElementProto.hasClass, arguments), i = res.length;
-    while( i-- ) if( !res[i] ) return false;
-    return true;
-  };
-  proto.html = function(str){
-    if( !this.length ) return '';
-    if( str ){
-      _forEachApply(this, ElementProto.html, str);
-      return this;
-    }
-    return this[0].html();
-  };
-  proto.is = function(/*...*/){
-    if(!this.length) return false;
-    return ElementProto.is.apply(this[0], arguments);
-  };
-  proto.parent = function(){
-    return $( _removeEquals(  _forEachApply(this, ElementProto.parent) ) );
-  };
-  proto.prop = function( key, val ){
-    if( !this.length ) return false;
-    if( $.isUndef(val) ){
-      return ElementProto.prop.call( this[0], key );
-    }
-    _forEachApply(this, ElementProto.prop, [key, val]);
-    return this;
-  };
-  proto.replaceWith = function(){
-    return $( _removeEquals(  _forEachApply(this, ElementProto.replaceWith, arguments) ) );
-  };
-  proto.text = function( str ){
-    if( !this.length ) return '';
-    var res = _forEachApply( $.isUndef(str)?[this[0]]:this , ElementProto.text, [str]);
-    return res[0];
-  };
-  proto.val = function(/*...*/){
-    if(!this.length) return null;
-    return ElementProto.val.apply(this[0], arguments);
   };
   
   
@@ -527,11 +466,9 @@
   $.isUndef = function(val){ return (typeof val === 'undefined'); };
   
   
-  
     // bloquear a iteração desses elementos:
-  funcsI = funcs.length;
-  while( funcsI-- ){ 
-    _defineProperty(proto, 5, funcs[funcsI]);
+  for(var g in proto){ 
+    _defineProperty(proto, 5, g);
   }
 
 
@@ -539,13 +476,58 @@
   //    Funções auxiliares
   
   
-  function _normalElementCall__2(proto, funcName, mode){
-    proto[funcName] = function(){
-      _forEachApply(this, ElementProto[funcName], arguments);
-      return this;
-    };
+    // modes:
+  var 
+    GETTER = 1,
+    SETTER = 2,
+    GETTER_FIRST = 3,
+    MIX = 4,
+    MIX_GETTER_FIRST = 5;
+    
+  function _normalElementCall(proto, funcName, mode, valorQuandoLenZero ){
+    if( $.isUndef(valorQuandoLenZero) ) valorQuandoLenZero = null;
+    
+    switch(mode){
+      case GETTER:
+        proto[funcName] = function(){
+          var el, arr = [], i = 0, j, res = _forEachApply(this, ElementProto[funcName], arguments);
+          for(; i < res.length; i++){
+            el = res[i];
+            if( $.is$(el) ){
+              for(j = 0; j < el.length; j++) arr.push( el[j] );
+            }else{
+              arr.push( el );
+            }
+          }
+          return $(arr);
+        };
+        break;
+      case SETTER:
+        proto[funcName] = function(){
+          _forEachApply(this, ElementProto[funcName], arguments);
+          return this;
+        };
+        break;
+      case GETTER_FIRST:
+        proto[funcName] = function(){
+          if( !this.length ) return valorQuandoLenZero ;
+          return _forEachApply( [this[0]] , ElementProto[funcName], arguments)[0];
+        };
+        break;
+      case MIX:
+        
+        break;
+      case MIX_GETTER_FIRST:
+        proto[funcName] = function(){
+          if( !this.length ) return !arguments.length? valorQuandoLenZero :this;
+          return _forEachApply( !arguments.length?[this[0]]:this , ElementProto[funcName], arguments)[0];
+        };
+        break;
+    }
+    
+    
   }
-  function _normalElementCall(proto, funcName){
+  function _normalElementCall__2(proto, funcName){
     proto[funcName] = function(){
       _forEachApply(this, ElementProto[funcName], arguments);
       return this;
@@ -609,6 +591,7 @@
     return res;
   }
   
+  /*
   function _toDataKeyStr( key ){
     key = key.replace(/^data-/, '');
     var reg = /-([\w\d])/g, letra = null;
@@ -617,6 +600,7 @@
     }
     return key;
   }
+  /* */
   function _toDataAttrStr( key ){
     var reg = /[A-Z]/g, letra = null;
     while( (letra = reg.exec(key)) ){
