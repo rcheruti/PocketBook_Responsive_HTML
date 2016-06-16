@@ -14,28 +14,43 @@
   console.log( 'isColor.test( "#fF8741" )' , isColor.test( "#fF8741" ) );
   console.log( 'isColor.test( "#fF874101" )' , isColor.test( "#fF874101" ) );
   /* */
+    
+    
+  var anim = new Animate( $('.bloco2')[0] ).relative(true).from({ sx:1, sy:1 });
   
-  var inputs = $('input');
-  for(var g in inputs){
-    console.log( 'log inputs', g, inputs[g] );
-  }
-  
-  new Animate( $('.bloco2')[0] )
-    .to( { opacity: 0.2 } )
-    //.repeat( Infinity )
-    .yoyo( true )
-    .time( 1000 )
-    .start();
-  
-  var animRight = new Animate( $('.bloco2')[0] ).to( { x: '+20', y:'+10', sx:'+0.1', rz:'+10' } );
-  var animLeft = new Animate( $('.bloco2')[0] ).interpolation( TWEEN.Interpolation.Bezier )
-    .to( { x:[120,86,220], y:[160,270,90] } );
-  
+  $('#reset').on('click', function(){
+    anim = new Animate( $('.bloco2')[0] ).relative(true).from({ sx:1, sy:1 });
+    anim.to({}).start();
+  });
   $('#goRight').on('click', function(){
-    animRight.start();
+    anim.to({ x: '100%' }).start();
   });
   $('#goLeft').on('click', function(){
-    animLeft.recalc(true).start();
+    anim.to({ x: '-100%' }).start();
+  });
+  $('#goUp').on('click', function(){
+    anim.to({ y: '-100%' }).start();
+  });
+  $('#goDown').on('click', function(){
+    anim.to({ y: '100%' }).start();
+  });
+  $('#scaleX').on('click', function(){
+    anim.to({ sx: 0.1 }).start();
+  });
+  $('#scaleY').on('click', function(){
+    anim.to({ sy: 0.1 }).start();
+  });
+  $('#rotateZ').on('click', function(){
+    anim.to({ rz: 10 }).start();
+  });
+  $('#Caminhar').on('click', function(){
+    new Animate( $('.bloco2')[0] )
+      .from({ x:0, y:0 })
+      .to({ x:[ 40, 80, 100], y:[ 80, 80,  40] })
+      .time(1000)
+      .easing( Animate.Easing.Cubic.Out )
+      .interpolation( Animate.Interpolation.Linear )
+      .start();
   });
   
 })();
