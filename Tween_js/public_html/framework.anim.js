@@ -145,11 +145,9 @@
     this._time = 350;
     this._delay = 0;
     this._chain = null;
-    
     this._to = null;
-    this._lastTo = null;
-    this._toUnits = null;
     this._from = null;
+    
     this._lastFrom = null; // bk do último ciclo
     this._fromUnits = null;
     this._tween = null;
@@ -157,6 +155,7 @@
     
     this._recalc = true;
     this._repeated = 0;
+    this._executing = false;
   }
   /*
    * .Interpolation.Linear
@@ -199,6 +198,7 @@
   _setAndTweenVal( proto, 'delay' );
   
   proto.start = function(){
+    if( this._executing ) return;
     if( this._recalc || !this._tween ) this.build();
     this._tween.start();
     return this;
@@ -238,13 +238,19 @@
   };
   proto.build = function(){
     var g, unit = '',
-        obj = {}, copObj = {}, objUnit = {}, from = this._lastFrom||this._from||{} , 
+        obj = {}, copObj = {}, objUnit = this._fromUnits, from = this._lastFrom||this._from||{} , 
         el = this._el, to = {}, _to = this._to;
     
+    if( !objUnit ){
+      objUnit = {};
+      for(g in from){
+        unit = regUnit.exec( from[g] );
+        objUnit[g] = unit? unit[0] : requestUnit[g];
+      }
+    }
     for(g in from){
       if( !(g in _to) ){
-        unit = regUnit.exec( from[g] );
-        _to[g] = 0 + unit;
+        _to[g] = 0 + objUnit[g];
       }
     }
     
@@ -261,8 +267,7 @@
           for(var k in val) to[g].push( parseFloat(val[k]) );
         }
         obj[g] = parseFloat( from[g] ) || 0; 
-        unit = unit? unit[0] : requestUnit[g];
-        objUnit[g] = unit;
+        objUnit[g] = unit? unit[0] : requestUnit[g];
       }else if( isColor.test( val ) ){
         console.warn('Falta impl. de animação para cores!');
       }
@@ -276,7 +281,7 @@
       for(g in obj) copObj[g] = obj[g];
     }
     this._lastFrom = obj;
-    
+    this._fromUnits = objUnit;
     
     //var tween = new TWEEN.Tween( JSON.parse(JSON.stringify(obj)) );
     var tween = new TWEEN.Tween( copObj );
@@ -292,6 +297,13 @@
     var that = this;
     tween.onStart(function(){
       that._recalc = true;
+      that._executing = true;
+    });
+    tween.onStop(function(){
+      that._executing = false;
+    });
+    tween.onComplete(function(){
+      that._executing = false;
     });
     tween.onUpdate(function(){
       that._lastFrom = this;
