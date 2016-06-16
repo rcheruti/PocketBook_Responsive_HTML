@@ -18,6 +18,14 @@
     
   var anim = new Animate( $('.bloco2')[0] ).relative(true).from({ sx:1, sy:1 });
   
+  new Animate( $('.bloco2')[0] )
+    .from({ backgroundColor: '#ff0000' })
+    .to({ backgroundColor: 'rgb(0,0,255)' })
+    .time(1000)
+    .start({ backgroundColor: '#0000ff' })
+  ;
+  
+  
   $('#reset').on('click', function(){
     anim = new Animate( $('.bloco2')[0] ).relative(true).from({ sx:1, sy:1 });
     anim.to({}).start();
