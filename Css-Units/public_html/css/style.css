@@ -9,38 +9,63 @@ body{
   position: relative;
   top: 0;
   left: 0;
-  padding: 5% 5%;
+  padding: 4% 4%;
   font-family: monospace;
 }
 body > div:last-of-type{
   margin-bottom: 20px;
 }
 
-.description{
+.recalcBox{
+  margin: 0 0 20px 0;
 }
-.description > *{
-  display: inline-block;
-  color: #999;
-  border-left: 1px solid rgba(64,128,255,0.6);
-  width: 30px;
-  font-size: 10px;
-  text-align: center;
-}
-.description > *:last-of-type{
-  border-right: 1px solid rgba(64,128,255,0.6);
-}
-.texts{
+.test{
   position: relative;
   border: 1px solid rgba(64,128,255,0.6);
+  margin-top: 40px;
+  padding: 10px;
+}
+.testDesc{
+  position: absolute;
+  font-size: 10px;
+  color: #999;
+  text-align: right;
+  vertical-align: top;
+  bottom: 100%;
+  bottom: calc(100% + 5px);
+  right: 0;
+  width: 100%;
+}
+.textsDesc{
+  padding: 0;
+}
+.textsDesc > *{
+  display: inline-block;
+  color: #999;
+  border-left: 1px solid rgba(64,128,255,0.3);
+  width: 16px;
+  font-size: 12px;
+  text-align: center;
+  vertical-align: top;
+   padding-top: 4px;
+}
+.textsDesc > *:nth-of-type(odd){
+  padding-top: 24px;
+}
+.texts{
   padding: 0 0 10px 0;
 }
-.texts > *:not(.linhaGuia){
-  font-family: serif;
+.texts > span{
+  font-family: 'Times New Roman', serif;
   display: inline-block;
   vertical-align: bottom;
   border-bottom: 1px solid rgba(255,0,0,.3);
   text-align: center;
-  width: 30px;
+  width: 16px;
+  line-height: 1em;
+}
+.texts.verdana > span{
+  font-family: 'Verdana', sans-serif;
 }
 .texts .linhaGuia{
   position: absolute;
@@ -67,6 +92,8 @@ body > div:last-of-type{
 .texts ._16pt{ font-size: 16pt; }
 .texts ._1cm{ font-size: 1cm; }
 .texts ._10mm{ font-size: 1cm; }
+.texts ._0-42cm{font-size: 0.42cm;}
+.texts ._4-2mm{font-size: 4.2mm;}
 .texts ._0-45cm{font-size: 0.45cm;}
 .texts ._4-5mm{font-size: 4.5mm;}
 .texts ._1em{ font-size: 1em; }
@@ -75,9 +102,7 @@ body > div:last-of-type{
 
 
 .widthsAndHeights{
-  border: 1px solid rgba(64,128,255,0.6);
-  margin-top: 40px;
-  padding: 10px;
+  
 }
 
 .widthsAndHeights .medidas{
@@ -108,4 +133,11 @@ body > div:last-of-type{
 
 .obs{
   margin: 30px 0 20px;
+}
+.verde{
+  color: rgba(20, 170, 90, 1);
+  font-weight: bold;
+}
+.verm{
+  color: rgba(250, 80 ,64,  1);
 }

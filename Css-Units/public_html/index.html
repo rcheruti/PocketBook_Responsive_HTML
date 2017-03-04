@@ -1,48 +1,96 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>CSS - Units</title>
+    <title>Mobile Tests</title>
     <meta charset="UTF-8">
     
+    <meta name="viewport" content="width=device-width" />
     <link href="css/style.css" rel="stylesheet" type="text/css"/>
     
   </head>
   <body>
     
+    <!--
     <div>
-      <button id="toggleViewportTag">Toggle Viewport Tag</button>
+      <button id="toggleViewportTag">Add Viewport Tag</button>
+    </div>
+    -->
+    <div class="recalcBox">
+      <button id="recalc">Recalc</button>
     </div>
     
-    <div class="texts">
+    <div class="obs">
+      Na CSS, o tamanho de 96px é 1 inch (polegada). <br/>
+      1 polegada = 2,54 cm (25,4 mm). <br/>
+      96 px = 25,4 mm <br/>
+      1 px = 25,4 mm / 96 = 0,2645833... mm <br/>
+      16 px = 4,233... mm = 1 em <br/>
+      "em" é o tamanho padrão de fonte (na css, 16px)
+    </div>
+    
+    <div class="texts test">
+      <div class="testDesc">Font: Times New Roman</div>
       <div class="linhaGuia horizontal linha1"></div>
       <div class="linhaGuia horizontal linha2"></div>
       
-      <div class="_12pt">I</div>
-      <div class="_1em">I</div>
-      <div class="_16px">I</div>
-      <div class="_16pt">I</div>
-      <div class="_1-5em">I</div>
-      <div class="_1cm">I</div>
-      <div class="_10mm">I</div>
-      <div class="_0-45cm">I</div>
-      <div class="_4-5mm">I</div>
+      <span class="_12pt">I</span>
+      <span class="_1em">I</span>
+      <span class="_16px">I</span>
+      <span class="_0-42cm">I</span>
+      <span class="_4-2mm">I</span>
+      <span class="_0-45cm">I</span>
+      <span class="_4-5mm">I</span>
+      <span class="_16pt">I</span>
+      <span class="_1-5em">I</span>
+      <span class="_1cm">I</span>
+      <span class="_10mm">I</span>
     </div>
-    <div class="description">
+    <div class="textsDesc">
       <div>12pt</div>
       <div>1em</div>
       <div>16px</div>
+      <div>.42cm</div>
+      <div>4.2mm</div>
+      <div>.45cm</div>
+      <div>4.5mm</div>
       <div>16pt</div>
       <div>1.5em</div>
       <div>1cm</div>
       <div>10mm</div>
-      <div>.45cm</div>
-      <div>4.5mm</div>
     </div>
     
-    <div class="widthsAndHeights">
-      <div>
-        <button id="recalc">Recalc</button>
-      </div>
+    <div class="texts verdana test">
+      <div class="testDesc">Font: Verdana</div>
+      <div class="linhaGuia horizontal linha1"></div>
+      <div class="linhaGuia horizontal linha2"></div>
+      
+      <span class="_12pt">I</span>
+      <span class="_1em">I</span>
+      <span class="_16px">I</span>
+      <span class="_0-42cm">I</span>
+      <span class="_4-2mm">I</span>
+      <span class="_0-45cm">I</span>
+      <span class="_4-5mm">I</span>
+      <span class="_16pt">I</span>
+      <span class="_1-5em">I</span>
+      <span class="_1cm">I</span>
+      <span class="_10mm">I</span>
+    </div>
+    <div class="textsDesc">
+      <div>12pt</div>
+      <div>1em</div>
+      <div>16px</div>
+      <div>.42cm</div>
+      <div>4.2mm</div>
+      <div>.45cm</div>
+      <div>4.5mm</div>
+      <div>16pt</div>
+      <div>1.5em</div>
+      <div>1cm</div>
+      <div>10mm</div>
+    </div>
+    
+    <div class="widthsAndHeights test">
       
       <table class="medidas">
         <tbody>
@@ -118,29 +166,15 @@
       
     </div>
     
-    <div class="obs">
-      Na CSS, o tamanho de 96px é: 1 inch (polegada).
-      <br/>
-      1 polegada = 2,54 cm (25,4 mm).
-      <br/>
-      96 px = 25,4 mm
-      <br/>
-      1 px = 25,4 mm / 96 = 0,2645833... mm
-      <br/>
-      16 px = 4,233... mm = 1 em
-      <br/>
-      "em" é o tamanho padrão de fonte (na css, 16px)
-    </div>
     
-    <div>
-      <div class="matchMediaMissing">
-        Esse navegador não tem a função "matchMedia" disponível.
-        <br/>
+    <div class="test">
+      <div class="matchMediaMissing verm">
+        Esse navegador não tem a função "matchMedia" disponível. <br/>
         Não é possível verificar Media Querys por código.
       </div>
       <div class="matchMedia">
         <div>
-          Media Querys =======================
+          ==== Media Querys ==== 
         </div>
         <div>
           <span>monochrome: </span>
@@ -193,9 +227,6 @@
       };
       
       (function(){
-        var metaTag = document.createElement('meta');
-        metaTag.name = 'viewport';
-        metaTag.content = 'width=device-width';
 
         function getValues(){
           $('#windowInnerWidth').textContent = window.innerWidth ;
@@ -214,33 +245,22 @@
           $('#orientationAngle').textContent = screen.orientation.angle ;
           $('#orientationType').textContent = screen.orientation.type ;
           
-          var jump1 = false;
-          function toggleMeta(ev){
-            if( jump1 )return jump1 = false;
-            if( ev.type === 'touchstart' ){
-              jump1 = true;
-            }
-            var has = $('head meta[name=viewport]');
-            //console.log( has, ev );
-            if( has ){
-              $('head').removeChild( has );
-            }else{
-              $('head').appendChild( metaTag );
-            }
-          }
-          $('#toggleViewportTag').on('mousedown', toggleMeta);
-          $('#toggleViewportTag').on('touchstart', toggleMeta);
-          
           if( matchMedia ){
             var lista = $A('.matchMedia [data-media]'), i = lista.length, el, mediaStr;
             while( i-- ){
               el = lista[i];
               mediaStr = el.attributes.item('data-media').value ;
-              if( matchMedia(mediaStr).matches ) el.textContent = 'Sim';
-              else el.textContent = 'Não';
+              if( matchMedia(mediaStr).matches ){
+                el.textContent = 'Sim';
+                el.className = 'verde';
+              }else{
+                el.textContent = 'Não';
+                el.className = 'verm';
+              }
             }
           }
         }
+        
         document.on('DOMContentLoaded', getValues);
         window.on('resize', getValues);
         $('#recalc').on('click', getValues);
