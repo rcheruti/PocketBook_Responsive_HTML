@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width" />
     <link href="css/style.css" rel="stylesheet" type="text/css"/>
     
+    <script src="http://192.168.0.10:8080/target/target-script-min.js#anonymous"></script>
   </head>
   <body>
     
@@ -102,26 +103,26 @@
           
           <tr>
             <td>window inner</td>
-            <td id="windowInnerWidth"></td>
-            <td id="windowInnerHeight"></td>
+            <td id="windowInnerWidth">--</td>
+            <td id="windowInnerHeight">--</td>
           </tr>
           
           <tr>
             <td>window outer</td>
-            <td id="windowOuterWidth"></td>
-            <td id="windowOuterHeight"></td>
+            <td id="windowOuterWidth">--</td>
+            <td id="windowOuterHeight">--</td>
           </tr>
           
           <tr>
             <td>screen</td>
-            <td id="screenWidth"></td>
-            <td id="screenHeight"></td>
+            <td id="screenWidth">--</td>
+            <td id="screenHeight">--</td>
           </tr>
           
           <tr>
             <td>screen available</td>
-            <td id="screenAvailWidth"></td>
-            <td id="screenAvailHeight"></td>
+            <td id="screenAvailWidth">--</td>
+            <td id="screenAvailHeight">--</td>
           </tr>
         </tbody>
       </table>
@@ -131,12 +132,12 @@
           
           <tr>
             <td>device pixel ratio: </td>
-            <td id="devicePixelRatio"></td>
+            <td id="devicePixelRatio">--</td>
             <td></td>
           </tr>
           <tr>
             <td>screen color depth: </td>
-            <td id="colorDepth"></td>
+            <td id="colorDepth">--</td>
             <td>
               Qtd de bits por pixel de imagem (de cor).
               <br/>
@@ -145,19 +146,19 @@
           </tr>
           <tr>
             <td>screen pixel depth: </td>
-            <td id="pixelDepth"></td>
+            <td id="pixelDepth">--</td>
             <td>
               Antigo "colorDepth", use sempre "colorDepth" hoje.
             </td>
           </tr>
           <tr>
             <td>screen orientation angle: </td>
-            <td id="orientationAngle"></td>
+            <td id="orientationAngle">--</td>
             <td></td>
           </tr>
           <tr>
             <td>screen orientation type: </td>
-            <td id="orientationType"></td>
+            <td id="orientationType">--</td>
             <td></td>
           </tr>
           
@@ -219,12 +220,24 @@
     <script>
       function $(str){ return document.querySelector(str); }
       function $A(str){ return document.querySelectorAll(str); }
-      EventTarget.prototype.on = function(name, callback, bubble){
-        return this.addEventListener( name, callback, bubble );
-      };
-      EventTarget.prototype.off = function(name, callback, bubble){
-        return this.removeEventListener( name, callback, bubble );
-      };
+      
+      function _bindOn( proto ){ 
+        proto.on = function(name, callback, bubble){
+          return this.addEventListener( name, callback, bubble );
+        };
+        proto.off = function(name, callback, bubble){
+          return this.removeEventListener( name, callback, bubble );
+        };
+      }
+      
+      // No IE e no iPad (Chrome e Safari) o Objeto/Interface "EventTarget" não existe!
+      if( window.EventTarget ){
+        _bindOn( window.EventTarget.prototype );
+      }else{
+        _bindOn( window.Node.prototype );
+        _bindOn( document );
+        _bindOn( window );
+      }
       
       (function(){
 
@@ -242,8 +255,10 @@
           $('#devicePixelRatio').textContent = window.devicePixelRatio ;
           $('#colorDepth').textContent = screen.colorDepth ;
           $('#pixelDepth').textContent = screen.pixelDepth ;
-          $('#orientationAngle').textContent = screen.orientation.angle ;
-          $('#orientationType').textContent = screen.orientation.type ;
+          if( screen.orientation ){
+            $('#orientationAngle').textContent = screen.orientation.angle ;
+            $('#orientationType').textContent = screen.orientation.type ;
+          }
           
           if( matchMedia ){
             var lista = $A('.matchMedia [data-media]'), i = lista.length, el, mediaStr;
