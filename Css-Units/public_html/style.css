@@ -100,9 +100,42 @@ body > div:last-of-type{
 .texts ._1-5em{ font-size: 1.5em; }
 
 
+/*  --------  Testes sobre tamanhos de elementos com valores diferentes de pixels  ------------------  */
+
+.sizeTestBlock{
+  min-height: 12px;
+  background: #dc7d2b;
+  margin: 0 0 12px;
+}
+.sizeTest .px1 .sizeTestBlock {
+  width: 1px;
+}
+.sizeTest .pt1 .sizeTestBlock {
+  width: 1pt;
+}
+.sizeTest .em1 .sizeTestBlock {
+  width: 1em;
+}
+.sizeTest .cm1 .sizeTestBlock {
+  width: 1cm;
+}
+.sizeTest .in1 .sizeTestBlock {
+  width: 1in;
+}
+.sizeTest .mm1 .sizeTestBlock {
+  width: 1mm;
+}
+
+
+
 
 .widthsAndHeights{
   
+}
+.widthsAndHeights .medidaCmRef{
+  position: absolute; /* para não parecer na tela */
+  left: -11000px;
+  width: 1cm;
 }
 
 .widthsAndHeights .medidas{
@@ -131,6 +164,8 @@ body > div:last-of-type{
   font-size: 10px;
 }
 
+
+/*  --------  Configurações gerais de cores e estilos  -----------  */
 .obs{
   margin: 30px 0 20px;
 }
@@ -139,5 +174,11 @@ body > div:last-of-type{
   font-weight: bold;
 }
 .verm{
-  color: rgba(250, 80 ,64,  1);
+  color: rgba(250, 80 , 64,  1);
+}
+.azul{
+  color: rgba(64, 80 , 250,  1);
+}
+.cinza{
+  color: #969696;
 }

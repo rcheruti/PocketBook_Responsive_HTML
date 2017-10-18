@@ -4,23 +4,33 @@
     <title>Mobile Tests</title>
     <meta charset="UTF-8">
     
+    <!--
     <meta name="viewport" content="width=device-width" />
-    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+    -->
+    <link href="style.css" rel="stylesheet" type="text/css"/>
     
-    <script src="http://192.168.0.10:8080/target/target-script-min.js#anonymous"></script>
+    <script src="index.js"></script>
   </head>
   <body>
     
-    <!--
-    <div>
-      <button id="toggleViewportTag">Add Viewport Tag</button>
-    </div>
-    -->
     <div class="recalcBox">
+      <button id="toggleViewportTag">Toggle Viewport Tag</button>
       <button id="recalc">Recalc</button>
+      <div class="cinza">
+        <strong>Atenção: </strong> remover a meta tag <u>Viewport</u> não irá remover as alterações que 
+        ela causa nos navegadores (na maioria dos navegadores, incluindo mobile)!
+      </div>
     </div>
     
+      <!--  Observações sobre os navegadores  -->
     <div class="obs">
+      <div class="semMetaViewport">
+          Esta página está <span class="verm">sem</span> a metatag <span class="azul">viewport</span>.
+      </div>
+      <div class="comMetaViewport">
+          Esta página está configurada com a metatag <span class="azul">viewport</span>: <span class="contentViewport verde"></span>.
+      </div>
+      <br/>
       Na CSS, o tamanho de 96px é 1 inch (polegada). <br/>
       1 polegada = 2,54 cm (25,4 mm). <br/>
       96 px = 25,4 mm <br/>
@@ -29,6 +39,7 @@
       "em" é o tamanho padrão de fonte (na css, 16px)
     </div>
     
+      <!--  Teste de tamanho de fontes (com fonte com serif)  -->
     <div class="texts test">
       <div class="testDesc">Font: Times New Roman</div>
       <div class="linhaGuia horizontal linha1"></div>
@@ -60,6 +71,7 @@
       <div>10mm</div>
     </div>
     
+      <!--  Teste de tamanho de fontes (com fonte sem serif)  -->
     <div class="texts verdana test">
       <div class="testDesc">Font: Verdana</div>
       <div class="linhaGuia horizontal linha1"></div>
@@ -91,7 +103,9 @@
       <div>10mm</div>
     </div>
     
+      <!--  Informações sobre as configs do navegador em execução  -->
     <div class="widthsAndHeights test">
+      <div class="medidaCmRef"></div>
       
       <table class="medidas">
         <tbody>
@@ -99,30 +113,40 @@
             <td></td>
             <td>W (px)</td>
             <td>H (px)</td>
+            <td>W (cm)</td>
+            <td>H (cm)</td>
           </tr>
           
           <tr>
             <td>window inner</td>
-            <td id="windowInnerWidth">--</td>
-            <td id="windowInnerHeight">--</td>
+            <td id="windowInnerWidth" class="azul">--</td>
+            <td id="windowInnerHeight" class="azul">--</td>
+            <td id="windowInnerWidthCm" class="verm">--</td>
+            <td id="windowInnerHeightCm" class="verm">--</td>
           </tr>
           
           <tr>
             <td>window outer</td>
-            <td id="windowOuterWidth">--</td>
-            <td id="windowOuterHeight">--</td>
+            <td id="windowOuterWidth" class="azul">--</td>
+            <td id="windowOuterHeight" class="azul">--</td>
+            <td id="windowOuterWidthCm" class="verm">--</td>
+            <td id="windowOuterHeightCm" class="verm">--</td>
           </tr>
           
           <tr>
             <td>screen</td>
-            <td id="screenWidth">--</td>
-            <td id="screenHeight">--</td>
+            <td id="screenWidth" class="azul">--</td>
+            <td id="screenHeight" class="azul">--</td>
+            <td id="screenWidthCm" class="verm">--</td>
+            <td id="screenHeightCm" class="verm">--</td>
           </tr>
           
           <tr>
             <td>screen available</td>
-            <td id="screenAvailWidth">--</td>
-            <td id="screenAvailHeight">--</td>
+            <td id="screenAvailWidth" class="azul">--</td>
+            <td id="screenAvailHeight" class="azul">--</td>
+            <td id="screenAvailWidthCm" class="verm">--</td>
+            <td id="screenAvailHeightCm" class="verm">--</td>
           </tr>
         </tbody>
       </table>
@@ -132,12 +156,12 @@
           
           <tr>
             <td>device pixel ratio: </td>
-            <td id="devicePixelRatio">--</td>
+            <td id="devicePixelRatio" class="verde">--</td>
             <td></td>
           </tr>
           <tr>
             <td>screen color depth: </td>
-            <td id="colorDepth">--</td>
+            <td id="colorDepth" class="verde">--</td>
             <td>
               Qtd de bits por pixel de imagem (de cor).
               <br/>
@@ -146,19 +170,19 @@
           </tr>
           <tr>
             <td>screen pixel depth: </td>
-            <td id="pixelDepth">--</td>
+            <td id="pixelDepth" class="verde">--</td>
             <td>
               Antigo "colorDepth", use sempre "colorDepth" hoje.
             </td>
           </tr>
           <tr>
             <td>screen orientation angle: </td>
-            <td id="orientationAngle">--</td>
+            <td id="orientationAngle" class="verde">--</td>
             <td></td>
           </tr>
           <tr>
             <td>screen orientation type: </td>
-            <td id="orientationType">--</td>
+            <td id="orientationType" class="verde">--</td>
             <td></td>
           </tr>
           
@@ -168,6 +192,7 @@
     </div>
     
     
+      <!--  Testes com 'window.matchMedia'  -->
     <div class="test">
       <div class="matchMediaMissing verm">
         Esse navegador não tem a função "matchMedia" disponível. <br/>
@@ -175,8 +200,9 @@
       </div>
       <div class="matchMedia">
         <div>
-          ==== Media Querys ==== 
+          ====  Media Querys  ==== 
         </div>
+        <br/>
         <div>
           <span>monochrome: </span>
           <span data-media="monochrome"></span>
@@ -217,73 +243,47 @@
       </div>
     </div>
     
-    <script>
-      function $(str){ return document.querySelector(str); }
-      function $A(str){ return document.querySelectorAll(str); }
+    
+      <!--  Testes medidas de CSS diferentes do Pixel  -->
+    <div class="test sizeTest">
       
-      function _bindOn( proto ){ 
-        proto.on = function(name, callback, bubble){
-          return this.addEventListener( name, callback, bubble );
-        };
-        proto.off = function(name, callback, bubble){
-          return this.removeEventListener( name, callback, bubble );
-        };
-      }
+      <div>
+        ====  Testes com medidas do navegador  ==== 
+      </div>
+      <br/>
       
-      // No IE e no iPad (Chrome e Safari) o Objeto/Interface "EventTarget" não existe!
-      if( window.EventTarget ){
-        _bindOn( window.EventTarget.prototype );
-      }else{
-        _bindOn( window.Node.prototype );
-        _bindOn( document );
-        _bindOn( window );
-      }
+      <div class="testing px1">
+        Bloco de <span class="azul">1px</span>: <span class="valorPixel verde">#</span>
+        <div class="sizeTestBlock"></div>
+      </div>
       
-      (function(){
-
-        function getValues(){
-          $('#windowInnerWidth').textContent = window.innerWidth ;
-          $('#windowInnerHeight').textContent = window.innerHeight ;
-          $('#windowOuterWidth').textContent = window.outerWidth ;
-          $('#windowOuterHeight').textContent = window.outerHeight ;
-          $('#screenWidth').textContent = screen.width ;
-          $('#screenHeight').textContent = screen.height ;
-          $('#screenAvailWidth').textContent = screen.availWidth ;
-          $('#screenAvailHeight').textContent = screen.availHeight ;
-
-
-          $('#devicePixelRatio').textContent = window.devicePixelRatio ;
-          $('#colorDepth').textContent = screen.colorDepth ;
-          $('#pixelDepth').textContent = screen.pixelDepth ;
-          if( screen.orientation ){
-            $('#orientationAngle').textContent = screen.orientation.angle ;
-            $('#orientationType').textContent = screen.orientation.type ;
-          }
-          
-          if( matchMedia ){
-            var lista = $A('.matchMedia [data-media]'), i = lista.length, el, mediaStr;
-            while( i-- ){
-              el = lista[i];
-              mediaStr = el.attributes.item('data-media').value ;
-              if( matchMedia(mediaStr).matches ){
-                el.textContent = 'Sim';
-                el.className = 'verde';
-              }else{
-                el.textContent = 'Não';
-                el.className = 'verm';
-              }
-            }
-          }
-        }
-        
-        document.on('DOMContentLoaded', getValues);
-        window.on('resize', getValues);
-        $('#recalc').on('click', getValues);
-        
-        if( !matchMedia ) $('.matchMedia').style.display = 'none';
-        else $('.matchMediaMissing').style.display = 'none';
-      })();
-    </script>
+      <div class="testing pt1">
+        Bloco de <span class="azul">1pt</span>: <span class="valorPixel verde">#</span> (ponto)
+        <div class="sizeTestBlock"></div>
+      </div>
+      
+      <div class="testing em1">
+        Bloco de <span class="azul">1em</span>: <span class="valorPixel verde">#</span> (tamanho de fonte)
+        <div class="sizeTestBlock"></div>
+      </div>
+      
+      <div class="testing cm1">
+        Bloco de <span class="azul">1cm</span>: <span class="valorPixel verde">#</span>
+        <div class="sizeTestBlock "></div>
+      </div>
+      
+      <div class="testing in1">
+        Bloco de <span class="azul">1in</span>: <span class="valorPixel verde">#</span> (polegada)
+        <div class="sizeTestBlock "></div>
+      </div>
+      
+      <div class="testing mm1">
+        Bloco de <span class="azul">1mm</span>: <span class="valorPixel verde">#</span>
+        <div class="sizeTestBlock "></div>
+      </div>
+      
+    </div>
+      
     
   </body>
 </html>
