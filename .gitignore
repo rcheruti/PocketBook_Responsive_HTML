@@ -2,3 +2,4 @@
 /Stylesheet download/nbproject/private/
 /Videos/nbproject/private/
 /SVG - Loader Animate/nbproject/private/
+**/node_modules/**
