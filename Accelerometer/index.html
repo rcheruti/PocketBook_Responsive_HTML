@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<hmtl>
+<html>
   <head>
     
     <title>Accelerometer Usage</title>
     
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scallable=no"/>
-    <link type="text/css" rel="stylesheet" href="index.css" />
-    <script src="index.js"></script>
+    <meta name="Content-Type" contet="text/html; charset=UTF-8"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
+    <link type="text/css" rel="stylesheet" href="index.css?v=1" />
+    <script src="index.js?v=1"></script>
+    <script src="ball.js?v=1"></script>
+    <script src="world.js?v=2"></script>
     
   </head>
   <body>
@@ -20,57 +24,121 @@
       <table class="accNumbers">
         <tbody>
             
-            <!--  Acceleration including gravity  -->
-            <tr>
-              <td>Acc. with gravity . X</td>
-              <td class="accGravityX">#</td>
-            </tr>
-            <tr>
-              <td>Acc. with gravity . Y</td>
-              <td class="accGravityY">#</td>
-            </tr>
-            <tr>
-              <td>Acc. with gravity . Z</td>
-              <td class="accGravityZ">#</td>
-            </tr>
-            
-            <!--  Acceleration without gravity  -->
-            <tr>
-              <td>Acc. without gravity . X</td>
-              <td class="accX">#</td>
-            </tr>
-            <tr>
-              <td>Acc. without gravity . Y</td>
-              <td class="accY">#</td>
-            </tr>
-            <tr>
-              <td>Acc. without gravity . Z</td>
-              <td class="accZ">#</td>
-            </tr>
-            
-            <!--  Rotation rate  -->
-            <tr>
-              <td>Rotation alpha</td>
-              <td class="accAlpha">#</td>
-            </tr>
-            <tr>
-              <td>Rotation beta</td>
-              <td class="accBeta">#</td>
-            </tr>
-            <tr>
-              <td>Rotation gamma</td>
-              <td class="accGamma">#</td>
-            </tr>
-            
-            <!--  Interval  -->
-            <tr>
-              <td>Interval</td>
-              <td class="accInterval">#</td>
-            </tr>
+          <!--  Acceleration including gravity  -->
+          <tr>
+            <td>Acc. with gravity . X</td>
+            <td class="accGravityX">#</td>
+          </tr>
+          <tr>
+            <td>Acc. with gravity . Y</td>
+            <td class="accGravityY">#</td>
+          </tr>
+          <tr>
+            <td>Acc. with gravity . Z</td>
+            <td class="accGravityZ">#</td>
+          </tr>
+          
+          <!--  Acceleration without gravity  -->
+          <tr>
+            <td>Acc. without gravity . X</td>
+            <td class="accX">#</td>
+          </tr>
+          <tr>
+            <td>Acc. without gravity . Y</td>
+            <td class="accY">#</td>
+          </tr>
+          <tr>
+            <td>Acc. without gravity . Z</td>
+            <td class="accZ">#</td>
+          </tr>
+          
+          <!--  Rotation rate  -->
+          <tr>
+            <td>Rotation alpha</td>
+            <td class="accAlpha">#</td>
+          </tr>
+          <tr>
+            <td>Rotation beta</td>
+            <td class="accBeta">#</td>
+          </tr>
+          <tr>
+            <td>Rotation gamma</td>
+            <td class="accGamma">#</td>
+          </tr>
+          
+          <!--  Interval  -->
+          <tr>
+            <td>Interval</td>
+            <td class="accInterval">#</td>
+          </tr>
           
         </tbody>
       </table>
       
+      <!--  Info about the ball  -->
+      <table class="ballData">
+        <tbody>
+          
+          <!--  Ball general info  -->
+          <tr>
+            <td>Mass (kg)</td>
+            <td class="ballMass">#</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Front Area (m²)</td>
+            <td class="ballArea">#</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Coeficient (constant)</td>
+            <td class="ballCoeficient" >#</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Size (w h)/</td>
+            <td class="ballWidth">#</td>
+            <td class="ballHeight">#</td>
+            <td></td>
+          </tr>
+          
+          <!--  Ball velocity info  -->
+          <tr>
+            <td>Velocity (m/s) (x y z)</td>
+            <td class="ballVelX">#</td>
+            <td class="ballVelY">#</td>
+            <td class="ballVelZ">#</td>
+          </tr>
+          
+          <!--  Ball positions info  -->
+          <tr>
+            <td>Pos (m/s) (x y z)</td>
+            <td class="ballPosX">#</td>
+            <td class="ballPosY">#</td>
+            <td class="ballPosZ">#</td>
+          </tr>
+          
+          <!--  Air drag force  -->
+          <tr>
+            <td>Air drag (x y z)</td>
+            <td class="airDragX">#</td>
+            <td class="airDragY">#</td>
+            <td class="airDragZ">#</td>
+          </tr>
+          
+          <!--  Ball acceleration  -->
+          <tr>
+            <td>Ball acc (m/s²) (x y z)</td>
+            <td class="ballAccX">#</td>
+            <td class="ballAccY">#</td>
+            <td class="ballAccZ">#</td>
+          </tr>
+          
+        </tbody>
+      </table>
     </div>
     
     
@@ -78,4 +146,4 @@
     <div class="ball"></div>
     
   </body>
-</hmtl>
+</html>

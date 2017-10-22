@@ -7,6 +7,9 @@ var raf =   requestAnimationFrame
         ||  function(callback){ setTimeout(callback, 16); };
 function $(str){ return document.querySelector(str); }
 function $A(str){ return document.querySelectorAll(str); }
+function metersToPixels( meters ){ return meters * 100 * 96 / 2.54 ; } // para 1px CSS, 96dpi
+function pixelsToMeters( pixels ){ return pixels / (96 / 2.54) / 100 ; } // para 1px CSS, 96dpi
+function accFromForceMass( force, mass ){ return (force / mass) || 0 ; } // return the acceleration created by the force
 
 // --------------------------------
 
@@ -20,58 +23,15 @@ function initMotion(){
   $('.motionNotSupported').style.display = 'none';
   $('.motionSupported').style.display = 'block';
   
-  var body = $('body');
-  var bodyStyle = getComputedStyle( body );
+  // ---  Calculus of the World
   
-  var widthMeters = 0 ;
-  var heightMeters = 0 ;
-    // to find screen size, in meters:
-  function screenSize(){
-    widthMeters = 96 * parseFloat(bodyStyle.width) / 2.54 * 100 ;
-    heightMeters = 96 * parseFloat(bodyStyle.height) / 2.54 * 100 ;
-  }
-  screenSize();
-  
-  function metersToPixels( meters ){
-    return meters / 100 * 96 / 2.54 ;
-  }
-  
-    // some values for the fisics :
-  //var GA = 9.81 ; // gravity acceleration
-  var ball = {
-    mass : 3.0 ,  // kg, mass of the ball
-    vX : 0 ,  // velocity of the ball, on X
-    vY : 0 ,  // velocity of the ball, on Y
-    vZ : 0 ,  // velocity of the ball, on Z
-    area : 2.5 * 2 * Math.PI ,  // area of the ball that is 'hiting' the air (its a shape; 2D)
-    coeficient : 0.47 , // this number is a constant; this is for a Sphere
-    x : 0 ,
-    y : 0 ,
-    z : 0 ,
-    el : $('.ball') ,
-    elStyle : getComputedStyle( $('.ball') )
-  }; 
+  var world = new World( $('body') );
+  var ball = new Ball( $('.ball') );
     
-    // put the on the center of the scree :
-  ball.elStyle.left =  ( parseFloat(bodyStyle.width) / 2 - parseFloat(ball.elStyle.width) / 2 )  +'px';
-  ball.elStyle.top =  ( parseFloat(bodyStyle.height) / 2 - parseFloat(ball.elStyle.height) / 2 )  +'px';
+  // put the ball on the center of the screen :
+  ball.pos( ( world.width / 2 - ball.width / 2 ), ( world.height / 4 - ball.height / 2 ), 0 ).applyPos();
   
-    // return the force of the drag of the air: 
-  function dragForce( density, velocity, area, coeficient ){
-    return 0.5 * density * area * coeficient     *velocity *velocity ; // v^2
-  }
-    // return the acceleration created by the force:
-  function accFromForceMass( force, mass ){
-    return force / mass ;
-  }
-  
-    // transform the ball position:
-  function transBall( x, y, z ){
-    ball.elStyle.transform = 'transition(  )';
-  }
-  
-  var airDensity = 1.2922 ; // density of the air, kg * m^-3
-    // the that we will store :
+  // the Motion Event we will store :
   var acc = {
     xGravity : 0 , // acceleration including gravity
     yGravity : 0 , // acceleration including gravity
@@ -85,9 +45,9 @@ function initMotion(){
     interval : 0   // interval (in ms) at which data is obtained from device
   };
   
-    // this function will do the repaint of the scene :
+  // this function will do the repaint of the scene :
   function repaint(){  
-      // showing the values on the screen :
+    // showing the values on the screen :
     $('.accNumbers .accGravityX').textContent = acc.xGravity.toFixed(2);
     $('.accNumbers .accGravityY').textContent = acc.yGravity.toFixed(2);
     $('.accNumbers .accGravityZ').textContent = acc.zGravity.toFixed(2);
@@ -102,33 +62,58 @@ function initMotion(){
     
     $('.accNumbers .accInterval').textContent = acc.interval.toFixed(2);
     
+    // ---
+    
+    $('.ballData .ballMass').textContent = ball.mass.toFixed(2) ;
+    $('.ballData .ballArea').textContent = ball.area.toFixed(2) ;
+    $('.ballData .ballCoeficient').textContent = ball.coeficient.toFixed(2) ;
+    $('.ballData .ballWidth').textContent = ball.width.toFixed(2) ;
+    $('.ballData .ballHeight').textContent = ball.height.toFixed(2) ;
+    
+    $('.ballData .ballVelX').textContent = ball.vX.toFixed(2) ;
+    $('.ballData .ballVelY').textContent = ball.vY.toFixed(2) ;
+    $('.ballData .ballVelZ').textContent = ball.vZ.toFixed(2) ;
+    
+    $('.ballData .ballPosX').textContent = ball.x.toFixed(2) ;
+    $('.ballData .ballPosY').textContent = ball.y.toFixed(2) ;
+    $('.ballData .ballPosZ').textContent = ball.z.toFixed(2) ;
+    
     // -----  calculus :
-      // force on each direction: 
-    var dragX = dragForce( airDensity, ball.vX, ball.area, ball.coeficient );
-    var dragY = dragForce( airDensity, ball.vY, ball.area, ball.coeficient );
-    var dragZ = dragForce( airDensity, ball.vZ, ball.area, ball.coeficient );
+    // force on each direction: 
+    var dragX = world.airDragForce( ball.area, ball.coeficient, ball.vX ) || 0 ;
+    var dragY = world.airDragForce( ball.area, ball.coeficient, ball.vY ) || 0 ;
+    var dragZ = world.airDragForce( ball.area, ball.coeficient, ball.vZ ) || 0 ;
     
-      // acceleration opposite to each direction:
-    var accelX = accFromForceMass( gradX, ball.mass ) * ( ball.vX / Math.abs( ball.vX ) ) ;
-    var accelY = accFromForceMass( gradY, ball.mass ) * ( ball.vY / Math.abs( ball.vY ) ) ;
-    var accelZ = accFromForceMass( gradZ, ball.mass ) * ( ball.vZ / Math.abs( ball.vZ ) ) ;
+    // acceleration opposite to each direction:
+    var accelX = accFromForceMass( dragX, ball.mass ) || 0 ;
+    var accelY = accFromForceMass( dragY, ball.mass ) || 0 ;
+    var accelZ = accFromForceMass( dragZ, ball.mass ) || 0 ;
     
-    ball.vX += accelX / acc.interval / 1000 ;
-    ball.vY += accelY / acc.interval / 1000 ;
-    ball.vZ += accelZ / acc.interval / 1000 ;
+    ball.vX += (accelX + world.xGravity) * ( world.motionInterval / 1000 ) || 0 ;
+    ball.vY += (accelY + world.yGravity) * ( world.motionInterval / 1000 ) || 0 ;
+    ball.vZ += (accelZ + world.zGravity) * ( world.motionInterval / 1000 ) || 0 ;
     
-    ball.x += metersToPixels( ball.vX ) ;
-    ball.y += metersToPixels( ball.vY ) ;
-    ball.z += metersToPixels( ball.vZ ) ;
+    ball.x += metersToPixels( ball.vX * ( world.motionInterval / 1000 ) ) || 0 ;
+    ball.y += metersToPixels( ball.vY * ( world.motionInterval / 1000 ) ) || 0 ;
+    ball.z += metersToPixels( ball.vZ * ( world.motionInterval / 1000 ) ) || 0 ;
     
-      // repaint
+    ball.insideBox( 0, world.width, world.height, 0 ).applyPos();
+    
+    $('.ballData .airDragX').textContent = accelX.toFixed(2) ;
+    $('.ballData .airDragY').textContent = accelY.toFixed(2) ;
+    $('.ballData .airDragZ').textContent = accelZ.toFixed(2) ;
+    
+    $('.ballData .ballAccX').textContent = (accelX + world.xGravity).toFixed(2) ;
+    $('.ballData .ballAccY').textContent = (accelY + world.yGravity).toFixed(2) ;
+    $('.ballData .ballAccZ').textContent = (accelZ + world.zGravity).toFixed(2) ;
+    
+    // repaint
     raf( repaint );
   }
   raf( repaint );
   
-    // this will get the motion events :
+  // this will get the motion events :
   window.ondevicemotion = function(ev){
-    //console.debug( ev );
     
     acc = {
       xGravity : parseFloat( ev.accelerationIncludingGravity.x || 0 ) , // acceleration including gravity
@@ -143,7 +128,10 @@ function initMotion(){
       interval : parseFloat( ev.interval || 0 )   // interval (in ms) at which data is obtained from device
     };
     
-    
+    world.xGravity = acc.xGravity *-1 ; // device X axis is inverted
+    world.yGravity = acc.yGravity ;
+    world.zGravity = acc.zGravity ; // positive is to back side, negative is to screen side
+    world.motionInterval = acc.interval ;
   };
   
 }
@@ -151,8 +139,6 @@ function initMotion(){
 // ===================================================================
 
 document.addEventListener('DOMContentLoaded', function(){
-  
   initMotion();
-  
 });
 
