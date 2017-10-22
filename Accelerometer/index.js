@@ -67,8 +67,8 @@ function initMotion(){
     $('.ballData .ballMass').textContent = ball.mass.toFixed(2) ;
     $('.ballData .ballArea').textContent = ball.area.toFixed(2) ;
     $('.ballData .ballCoeficient').textContent = ball.coeficient.toFixed(2) ;
-    $('.ballData .ballWidth').textContent = ball.width.toFixed(2) ;
-    $('.ballData .ballHeight').textContent = ball.height.toFixed(2) ;
+    $('.ballData .ballWidth').textContent = ball.width.toFixed(0) ;
+    $('.ballData .ballHeight').textContent = ball.height.toFixed(0) ;
     
     $('.ballData .ballVelX').textContent = ball.vX.toFixed(2) ;
     $('.ballData .ballVelY').textContent = ball.vY.toFixed(2) ;
@@ -89,9 +89,10 @@ function initMotion(){
     var accelY = accFromForceMass( dragY, ball.mass ) || 0 ;
     var accelZ = accFromForceMass( dragZ, ball.mass ) || 0 ;
     
-    ball.vX += (accelX + world.xGravity) * ( world.motionInterval / 1000 ) || 0 ;
-    ball.vY += (accelY + world.yGravity) * ( world.motionInterval / 1000 ) || 0 ;
-    ball.vZ += (accelZ + world.zGravity) * ( world.motionInterval / 1000 ) || 0 ;
+    var accResist = 0.6 ; // to reduce the acceleration of an object
+    ball.vX += accResist* (accelX + world.xGravity) * ( world.motionInterval / 1000 ) || 0 ;
+    ball.vY += accResist* (accelY + world.yGravity) * ( world.motionInterval / 1000 ) || 0 ;
+    ball.vZ += accResist* (accelZ + world.zGravity) * ( world.motionInterval / 1000 ) || 0 ;
     
     ball.x += metersToPixels( ball.vX * ( world.motionInterval / 1000 ) ) || 0 ;
     ball.y += metersToPixels( ball.vY * ( world.motionInterval / 1000 ) ) || 0 ;

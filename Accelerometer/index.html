@@ -26,54 +26,50 @@
             
           <!--  Acceleration including gravity  -->
           <tr>
-            <td>Acc. with gravity . X</td>
+            <td class="header left">Acc w/ gravity</td>
             <td class="accGravityX">#</td>
-          </tr>
-          <tr>
-            <td>Acc. with gravity . Y</td>
             <td class="accGravityY">#</td>
-          </tr>
-          <tr>
-            <td>Acc. with gravity . Z</td>
             <td class="accGravityZ">#</td>
           </tr>
           
           <!--  Acceleration without gravity  -->
           <tr>
-            <td>Acc. without gravity . X</td>
+            <td class="header left">Acc w/out gravity</td>
             <td class="accX">#</td>
-          </tr>
-          <tr>
-            <td>Acc. without gravity . Y</td>
             <td class="accY">#</td>
-          </tr>
-          <tr>
-            <td>Acc. without gravity . Z</td>
             <td class="accZ">#</td>
           </tr>
           
-          <!--  Rotation rate  -->
-          <tr>
-            <td>Rotation alpha</td>
-            <td class="accAlpha">#</td>
-          </tr>
-          <tr>
-            <td>Rotation beta</td>
-            <td class="accBeta">#</td>
-          </tr>
-          <tr>
-            <td>Rotation gamma</td>
-            <td class="accGamma">#</td>
-          </tr>
           
-          <!--  Interval  -->
+          <!--  Rotation rate and data collection Interval  -->
           <tr>
-            <td>Interval</td>
-            <td class="accInterval">#</td>
+            <td colspan="3" class="header">Rotation</td>
+            <td class="header">Interval</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="subheader">α</span><br/>
+              <span class="accAlpha">#</span>
+            </td>
+            <td>
+              <span class="subheader">β</span><br/>
+              <span class="accBeta">#</span>
+            </td>
+            <td>
+              <span class="subheader">γ</span><br/>
+              <span class="accGamma">#</span>
+            </td>
+            
+            <td>
+              <span class="subheader">ms</span><br/>
+              <span class="accInterval">#</span>
+            </td>
           </tr>
           
         </tbody>
       </table>
+      
+      <!-- ==================================================== -->
       
       <!--  Info about the ball  -->
       <table class="ballData">
@@ -81,60 +77,111 @@
           
           <!--  Ball general info  -->
           <tr>
-            <td>Mass (kg)</td>
-            <td class="ballMass">#</td>
-            <td></td>
-            <td></td>
+            <td class="header left">Mass</td>
+            <td>
+              <span class="subheader">kg</span><br/>
+              <span class="ballMass">#</span>
+            </td>
+            <td class="header left">Frontal Area</td>
+            <td>
+              <span class="subheader">m²</span><br/>
+              <span class="ballArea">#</span>
+            </td>
           </tr>
           <tr>
-            <td>Front Area (m²)</td>
-            <td class="ballArea">#</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Coeficient (constant)</td>
-            <td class="ballCoeficient" >#</td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Size (w h)/</td>
-            <td class="ballWidth">#</td>
-            <td class="ballHeight">#</td>
-            <td></td>
+            <td>
+              <span class="subheader">Coeficient</span><br/>
+              <span class="ballCoeficient">#</span>
+            </td>
+            <td class="header left">Size</td>
+            <td>
+              <span class="subheader">width</span><br/>
+              <span class="ballWidth">#</span>
+            </td>
+            <td>
+              <span class="subheader">height</span><br/>
+              <span class="ballHeight">#</span>
+            </td>
           </tr>
           
           <!--  Ball velocity info  -->
           <tr>
-            <td>Velocity (m/s) (x y z)</td>
-            <td class="ballVelX">#</td>
-            <td class="ballVelY">#</td>
-            <td class="ballVelZ">#</td>
+            <td class="header left">
+              <span class="">Velocity</span><br/>
+              <span class="subheader">m/s</span>
+            </td>
+            <td>
+              <span class="subheader">x</span><br/>
+              <span class="ballVelX">#</span>
+            </td>
+            <td>
+              <span class="subheader">y</span><br/>
+              <span class="ballVelY">#</span>
+            </td>
+            <td>
+              <span class="subheader">z</span><br/>
+              <span class="ballVelZ">#</span>
+            </td>
           </tr>
           
           <!--  Ball positions info  -->
           <tr>
-            <td>Pos (m/s) (x y z)</td>
-            <td class="ballPosX">#</td>
-            <td class="ballPosY">#</td>
-            <td class="ballPosZ">#</td>
+            <td class="header left">
+              <span class="">Position</span><br/>
+              <span class="subheader">px</span>
+            </td>
+            <td>
+              <span class="subheader">x</span><br/>
+              <span class="ballPosX">#</span>
+            </td>
+            <td>
+              <span class="subheader">y</span><br/>
+              <span class="ballPosY">#</span>
+            </td>
+            <td>
+              <span class="subheader">z</span><br/>
+              <span class="ballPosZ">#</span>
+            </td>
           </tr>
           
           <!--  Air drag force  -->
           <tr>
-            <td>Air drag (x y z)</td>
-            <td class="airDragX">#</td>
-            <td class="airDragY">#</td>
-            <td class="airDragZ">#</td>
+            <td class="header left">
+              <span class="">Air drag</span><br/>
+              <span class="subheader">a</span>
+            </td>
+            <td>
+              <span class="subheader">x</span><br/>
+              <span class="airDragX">#</span>
+            </td>
+            <td>
+              <span class="subheader">y</span><br/>
+              <span class="airDragY">#</span>
+            </td>
+            <td>
+              <span class="subheader">z</span><br/>
+              <span class="airDragZ">#</span>
+            </td>
           </tr>
           
           <!--  Ball acceleration  -->
           <tr>
-            <td>Ball acc (m/s²) (x y z)</td>
-            <td class="ballAccX">#</td>
-            <td class="ballAccY">#</td>
-            <td class="ballAccZ">#</td>
+            <td class="header left">
+              <span class="">Ball acc</span><br/>
+              <span class="subheader">(m/s²)</span>
+            </td>
+            <td>
+              <span class="subheader">x</span><br/>
+              <span class="ballAccX">#</span>
+            </td>
+            <td>
+              <span class="subheader">y</span><br/>
+              <span class="ballAccY">#</span>
+            </td>
+            <td>
+              <span class="subheader">z</span><br/>
+              <span class="ballAccZ">#</span>
+            </td>
           </tr>
           
         </tbody>

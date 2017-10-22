@@ -9,7 +9,7 @@
     this.width = parseFloat(this.elStyle.width) ;   // width px
     this.height = parseFloat(this.elStyle.height) ; // height px
     
-    this.airDensity = 1.2922 ; // density of the air, kg * m^-3
+    this.airDensity = 1.2922 ; // 1.2922: density of the air, kg * m^-3
     this.xGravity = 0 ; // acceleration by gravity, m/s^2
     this.yGravity = 0 ;
     this.zGravity = 0 ;

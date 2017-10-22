@@ -6,7 +6,7 @@
   // constructor
   function Ball( node ){
     this.mass = 3.0 ;   // kg, mass of the ball
-    this.coeficient = 0.47 ; // this number is a constant; this is for a Sphere
+    this.coeficient = 0.47 ; // this number is a constant; this is for a Sphere; see "Reynolds number"
     this.el = node ;
     this.elStyle = window.getComputedStyle( node ) ;
     this.width = parseFloat(this.elStyle.width) ;   // width px
@@ -51,23 +51,24 @@
   };
   
   // detect if this ball is inside the box. Put the ball inside if needed
+  var refletion = -0.5 ;
   Ball.prototype.insideBox = function( top, right, bottom, left ){
     if( this.x < left ){
       this.x = left ;
-      this.vX *= -0.8 ; // change direction
+      this.vX *= refletion ; // change direction
     } 
     if( this.y < top ){
       this.y = top ;
-      this.vY *= -0.8 ; // change direction
+      this.vY *= refletion ; // change direction
     }
     
     if( this.x + this.width > right ){
       this.x = right - this.width ;
-      this.vX *= -0.8 ; // change direction
+      this.vX *= refletion ; // change direction
     }
     if( this.y + this.height > bottom ){
       this.y = bottom - this.height ;
-      this.vY *= -0.8 ; // change direction
+      this.vY *= refletion ; // change direction
     }
     return this;
   };
